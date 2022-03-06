@@ -6,7 +6,7 @@ const feedback_time = 1;
 module.exports = {
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
-    "getFeedback": async(report, exercise) => {
+    "getFeedback": async(report, exercise, student_file) => {
 
         try {
             let feedback = ""

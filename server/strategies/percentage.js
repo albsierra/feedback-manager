@@ -12,12 +12,12 @@ module.exports = {
 
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
-    getFeedback: async(report, exercise) => {
+    getFeedback: async(report, exercise, student_file) => {
 
 
-        const percentage = report.compilationErrors.length / report.number_of_tests;
+        const percentage = (report.compilationErrors.length / report.number_of_tests) - 1;
 
-        const item = new feedbackItem(percentage.toString(), 1, "INF", -1, feedback_name);
+        const item = new feedbackItem(` The exercise is ${percentage}% correct `, 1, "INF", -1, feedback_name);
 
         return item;
     }

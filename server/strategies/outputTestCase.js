@@ -7,7 +7,7 @@ module.exports = {
 
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
-    getFeedback: async(report, exercise) => {
+    getFeedback: async(report, exercise, student_file) => {
         try {
             console.log(report.compilationErrors)
             let feedback = ""
