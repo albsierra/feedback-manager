@@ -12,54 +12,52 @@ export async function db(callback, document) {
     })
 
 }
+export async function createIndex(index) {
+    const result = await collection.createIndex(index);
+    console.log(`Index created: ${result}`);
 
-
+}
 export function cehckIfExist(collection_name) {
-    let list = client.db.getCollectionNames()
-    return list.includes(collection_name);
-}
-export async function insert(obj) {
+    return new Promise((resolve, reject) => {
+        let flag = false;
+        client.db("JUEZLTI").collections(function(e, cols) {
+            if (e) {
+                console.log(e)
+                reject(e);
+            }
+            cols.forEach(function(col) {
+                if (collection_name == col.collectionName) {
+                    flag = true
+                }
+            });
+            resolve(flag);
+        });
 
-    const insertResult = await collection.insert(obj);
-    console.log(`Inserted`);
-}
 
-export async function insertMany(objs) {
-
-
-    const insertResult = await collection.insertMany(objs);
-    console.log(`Inserted documents =>  ${insertResult}`);
-}
-
-export async function findAll() {
-    const findResult = await collection.find({}).toArray();
-    console.log(`Found documents =>  ${findResult}`);
+    })
 
 }
+export function insert(obj) {
+    return new Promise((resolve, reject) => {
+        collection.insert(obj, function(err, result) {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve(result.insertedIds['0'])
+            }
+
+        });
+    })
+
+
+}
+
 export async function findWithCriteria(obj, sort_fields) {
     if (sort_fields != undefined)
         return await collection.find(obj).sort(sort_fields).toArray();
     else
         return await collection.find(obj).toArray();
-
-
-
-}
-
-export async function update() {
-    const updateResult = await collection.updateOne({ a: 3 }, { $set: { b: 1 } });
-    console.log(`Updated documents => ${updateResult}`);
-
-}
-export async function remove() {
-    const deleteResult = await collection.deleteMany({ a: 3 });
-    console.log(`Deleted documents => ${deleteResult}`);
-
-}
-export async function removeAll() {
-    const deleteResult = await collection.deleteMany({});
-    console.log(`Deleted documents => ${deleteResult}`);
-
 }
 
 export function closeConnection() {

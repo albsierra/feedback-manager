@@ -1,5 +1,4 @@
-import Model from '../model/studentFile'
-import { db, closeConnection, insert, removeAll, findWithCriteria } from './dbManager';
+import { db, findWithCriteria } from './dbManager';
 
 
 export default (student_id, exercise_id, number_of_tests) => {
@@ -7,9 +6,14 @@ export default (student_id, exercise_id, number_of_tests) => {
 
     return new Promise((resolve, reject) => {
         db(() => {
-            findWithCriteria({ "student_id": student_id }).then((records) => {
+            findWithCriteria({
+                "student_id": student_id,
+                "exercise_id": exercise_id
+            }).then((records) => {
                 let student_file = {}
                 let feedback_already_reported = {}
+
+
 
                 let number_of_submissions = 0
                 let already_solved = false
@@ -47,6 +51,7 @@ export default (student_id, exercise_id, number_of_tests) => {
 
                 });
 
+                student_file.student_id = student_id
                 student_file.number_of_submissions = number_of_submissions
                 student_file.already_solved = already_solved
                 student_file.most_frequent_incorrect_test_case = most_frequent_incorrect_test_case
@@ -57,10 +62,7 @@ export default (student_id, exercise_id, number_of_tests) => {
 
 
             });
-
-
-
-        }, `exercise_${exercise_id}`).catch((error) => {
+        }, "feedbacks").catch((error) => {
             console.log("error {}")
             reject(error)
         });

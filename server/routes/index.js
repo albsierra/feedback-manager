@@ -8,28 +8,7 @@ import { runMochaTests } from '../mocha-setup';
 import { defineTestSuiteAndAddTests } from '../tests/sample-tests';
 
 var router = express.Router();
-// ..stuff below
-const match = (array, substring) => {
 
-    let result = false;
-    array.find((element) => {
-
-
-        if (element == ("impossibleToEvaluate")) {
-            result = true;
-        }
-    });
-    return result;
-}
-router.get("/test", (req, res) => {
-    fillFile("201800388", "2").then((data) => {
-        res.send(data);
-    }).catch((err) => {
-        console.log(err)
-        res.send(err);
-
-    })
-})
 router.get("/feedback/performance", async(req, res) => {
     await defineTestSuiteAndAddTests();
     const result = await runMochaTests()
@@ -44,7 +23,7 @@ router.post("/", function(req, res) {
         if (input.reply.report) {
             if (input.reply.report.compilationErrors.length > 0) {
                 {
-                    getBestFeedback(input.reply.report).then((feedback) => {
+                    getBestFeedback(input.reply.report, input.request.studentID, input).then((feedback) => {
                         console.log(feedback)
                         res.send(feedback);
                     }).catch((error) => {
