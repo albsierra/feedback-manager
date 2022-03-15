@@ -1,4 +1,3 @@
-import { suite, Test, suiteInstance } from '../mocha-setup'
 import { expect } from 'chai';
 import fs from 'fs';
 import path from 'path';
@@ -7,11 +6,12 @@ import reportValue from 'mochawesome/addContext'
 import { loadSchemaYAPEXIL, ProgrammingExercise } from "programming-exercise-juezlti";
 import { performance } from 'perf_hooks';
 import fillFile from '../commons/fill';
+import feedbackItem from '../commons/feedbackItem'
 
 
 var programmingExercise;
 var strategies = [];
-const defineTestSuiteAndAddTests = async() => {
+const defineTestSuiteAndAddTests = async(suite, Test, suiteInstance) => {
     await loadSchemaYAPEXIL();
 
     let files = fs.readdirSync(path.join(__dirname, "..", process.env.STRATEGIES_FOLDER));
@@ -28,35 +28,19 @@ const defineTestSuiteAndAddTests = async() => {
         })
 
 
+    var start = performance.now();
+
+    let data = await fillFile(report.reply.report.user_id, report.reply.report.exercise, report.reply.report.number_of_tests);
+    var end = performance.now();
+    var DBaccessCoast = (end - start)
+
     const parentSuiteName = suite('Threshold time testing')
-    timingTestBD(parentSuiteName);
-    timingTestStrategies(parentSuiteName);
+
+    timingTestStrategies(Test, suiteInstance, parentSuiteName, data.student_file, data.feedback_already_reported, DBaccessCoast);
 
 
 }
-
-
-
-
-const timingTestBD = (parentSuite) => {
-    const testSuite = suiteInstance.create(parentSuite, ' MongoDB access time to all instances of form {student_id, exercise_id}');
-    //BD check time
-    testSuite.addTest(new Test(` {201800388,fd286cb3-5c95-4b0e-b843-56bc058a7713}`, async() => {
-        var start = performance.now();
-        fillFile("201800388", "fd286cb3-5c95-4b0e-b843-56bc058a7713").then((data) => {
-            var end = performance.now();
-            var final = end - start;
-            reportValue(this, `Execution time: ${final} ms`)
-            expect(final).to.be.lessThan(2);
-        }).catch((err) => {
-            console.log(err)
-            res.send(err);
-
-        })
-    }))
-}
-
-const timingTestStrategies = (parentSuite) => {
+const timingTestStrategies = (Test, suiteInstance, parentSuite, student_file, feedback_already_reported, DBaccessCost) => {
     const testSuite = suiteInstance.create(parentSuite, ' First Class of Feedback');
 
     //Strategies check time
@@ -64,10 +48,40 @@ const timingTestStrategies = (parentSuite) => {
 
         testSuite.addTest(new Test(`Validate if feedback "${strategy.feedback_name}" finish earlier  than ${strategy.feedback_time} ms`, async() => {
             var start = performance.now();
-            let feedbackItem = await strategy.getFeedback(report.reply.report, programmingExercise)
+
+            const allFeedbacks = await Promise.all(strategies.map(s => s.getFeedback(report.reply.report, programmingExercise, student_file)));
+            var feedback = new feedbackItem("hmm...", 100, "error", -1);
+            var allFeedbacksSorted = []
+            if (allFeedbacks.length > 0) {
+                allFeedbacksSorted = allFeedbacks.sort(feedbackItem.compare)
+                while (true) {
+                    feedback = allFeedbacksSorted[0]
+                    if (feedback_already_reported[allFeedbacksSorted[0].name] == undefined) {
+                        break;
+                    }
+
+                    if (feedback_already_reported[allFeedbacksSorted[0].name].includes(allFeedbacksSorted[0].text)) {
+
+                        allFeedbacksSorted.shift()
+                        if (allFeedbacksSorted.length == 0) {
+                            var feedback = new feedbackItem("hmm... I already give to you all feedbacks", 100, "error", -1);
+                            break;
+                        }
+
+
+                    } else {
+                        break;
+                    }
+
+                }
+
+            }
+
             var end = performance.now();
-            var final = end - start;
+            var final = (end - start) + DBaccessCost;
+
             reportValue(this, `Execution time: ${final} ms`)
+
             expect(final).to.be.lessThan(strategy.feedback_time);
 
         }))

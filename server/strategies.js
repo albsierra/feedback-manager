@@ -61,21 +61,46 @@ function readStrategiesAndStart() {
 
 export function getBestFeedback(input, student_id, full_report) {
     return new Promise((resolve, reject) => {
-        if (strategies.length == 0) {
-            readStrategiesAndStart()
+        if (input.compilationErrors.length > 0) {
+            {
+                if (strategies.length == 0) {
+                    readStrategiesAndStart()
+                }
+                fillFile(student_id, input.exercise, input.number_of_tests).then(
+                    (data) => {
+                        applyStrategies(input, data.student_file, data.feedback_already_reported, resolve, reject, full_report)
+
+                    }).catch((err) => {
+                    console.log(err)
+                    console.log("error in function getBestFeedback")
+                    reject();
+
+                });
+            }
+        } else {
+
+            let feedback_text = "Congratulations!!!! you have submitted the correct answer";
+
+            let number_of_correct_tests = [];
+
+            [...Array(input.number_of_tests)].forEach((el, index) => {
+                number_of_correct_tests.push(`${index}`);
+            });
+
+            let evaluation_report = {
+                "exercise": input.exercise,
+                "compilationErrors": [],
+                "number_of_tests": input.number_of_tests,
+                "number_of_correct_tests": number_of_correct_tests,
+                "number_of_incorrect_tests": [],
+            }
+            persist_feedback(evaluation_report, student_id, "Congratulations", feedback_text, feedback_id => {
+                persist_report(feedback_id, full_report);
+            });
+            resolve(feedback_text);
         }
 
-        fillFile(student_id, input.exercise, input.number_of_tests).then(
-            (data) => {
 
-                applyStrategies(input, data.student_file, data.feedback_already_reported, resolve, reject, full_report)
-
-            }).catch((err) => {
-            console.log(err)
-            console.log("error in function getBestFeedback")
-            reject();
-
-        })
 
     })
 
@@ -123,7 +148,7 @@ function applyStrategies(input, student_file, feedback_already_reported, resolve
 
 
 
-function persist_feedback(evaluation_report, student_id, feedback_name, feedback_text, callback) {
+export function persist_feedback(evaluation_report, student_id, feedback_name, feedback_text, callback) {
     let ins = () => {
         insert({
                 "student_id": student_id,
@@ -170,7 +195,7 @@ function persist_feedback(evaluation_report, student_id, feedback_name, feedback
     }, "feedbacks");
 }
 
-function persist_report(feedback_id, full_report, callback) {
+export function persist_report(feedback_id, full_report, callback) {
     let ins = () => {
         insert({
             "feedback_id": feedback_id,

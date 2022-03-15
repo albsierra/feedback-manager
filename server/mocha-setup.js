@@ -3,15 +3,15 @@ import moment from 'moment-timezone';
 import path from 'path'
 
 // for reporting
-const currentDateTime = moment().tz('Portugal').format('YYYY/MM/DD/HH:mm:ss');
+const currentDateTime = moment().tz('Portugal').format('YYYY/MM/DD/HH/mm/ss');
 const reportDirectory = path.resolve(__dirname, `../public/execution-report/${currentDateTime}`)
 
-// mocha setup
-const Test = Mocha.Test;
 
-const suiteInstance = Mocha.Suite;
+var Test = Mocha.Test;
 
-const mocha = new Mocha({
+var suiteInstance = Mocha.Suite;
+
+var mocha = new Mocha({
     timeout: 200000,
     reporter: 'mochawesome',
     reporterOptions: {
@@ -22,15 +22,17 @@ const mocha = new Mocha({
     }
 });
 
-const suite = (suiteName = 'Suite Name') => suiteInstance.create(mocha.suite, suiteName);
+var suite = (suiteName = 'Suite Name') => suiteInstance.create(mocha.suite, suiteName);
 
 const runMochaTests = () => {
+
+    mocha.cleanReferencesAfterRun(true);
     return new Promise((resolve, reject) => {
         mocha.run((failures) => {
-            if (failures) reject('at least one test is failed, check detailed execution report')
-            resolve(`${reportDirectory}/mochawesome.html`)
+
+            resolve(`/execution-report/${currentDateTime}/mochawesome.html`)
         });
     });
 }
 
-module.exports = { suite, Test, runMochaTests, suiteInstance }
+module.exports = { suite, Test, runMochaTests, suiteInstance, reportDirectory }

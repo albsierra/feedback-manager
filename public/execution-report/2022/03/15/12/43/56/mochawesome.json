@@ -1,0 +1,297 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 9,
+    "passes": 4,
+    "pending": 0,
+    "failures": 5,
+    "start": "2022-03-15T12:43:57.060Z",
+    "end": "2022-03-15T12:43:57.084Z",
+    "duration": 24,
+    "testsRegistered": 9,
+    "passPercent": 44.44444444444444,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "ca0f75ba-7fcd-40dd-87b5-8835bc5b8031",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "aafa6be9-ec7f-4666-a598-b8f53ae1080e",
+          "title": "Threshold time testing",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+              "title": " First Class of Feedback",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Validate if feedback \"alreadyDidItBefore\" finish earlier  than 1 ms",
+                  "fullTitle": "Threshold time testing  First Class of Feedback Validate if feedback \"alreadyDidItBefore\" finish earlier  than 1 ms",
+                  "timedOut": false,
+                  "duration": 5,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"next\", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"throw\", err); } _next(undefined); });",
+                  "err": {
+                    "message": "AssertionError: expected 23.60129999741912 to be below 1",
+                    "estack": "AssertionError: expected 23.60129999741912 to be below 1\n    at _callee2$ (dist-server/tests/sample-tests.js:155:47)\n    at tryCatch (node_modules/regenerator-runtime/runtime.js:63:40)\n    at Generator.invoke [as _invoke] (node_modules/regenerator-runtime/runtime.js:294:22)\n    at Generator.next (node_modules/regenerator-runtime/runtime.js:119:21)\n    at asyncGeneratorStep (dist-server/tests/sample-tests.js:25:103)\n    at _next (dist-server/tests/sample-tests.js:27:194)\n    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+                    "diff": "- 23.60129999741912\n+ 1\n"
+                  },
+                  "uuid": "3c975f42-4dcd-489a-ab9d-2eb16d8f8e3b",
+                  "parentUUID": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Validate if feedback \"frequemcy\" finish earlier  than 1 ms",
+                  "fullTitle": "Threshold time testing  First Class of Feedback Validate if feedback \"frequemcy\" finish earlier  than 1 ms",
+                  "timedOut": false,
+                  "duration": 2,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"next\", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"throw\", err); } _next(undefined); });",
+                  "err": {
+                    "message": "AssertionError: expected 20.82269999757409 to be below 1",
+                    "estack": "AssertionError: expected 20.82269999757409 to be below 1\n    at _callee2$ (dist-server/tests/sample-tests.js:155:47)\n    at tryCatch (node_modules/regenerator-runtime/runtime.js:63:40)\n    at Generator.invoke [as _invoke] (node_modules/regenerator-runtime/runtime.js:294:22)\n    at Generator.next (node_modules/regenerator-runtime/runtime.js:119:21)\n    at asyncGeneratorStep (dist-server/tests/sample-tests.js:25:103)\n    at _next (dist-server/tests/sample-tests.js:27:194)\n    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+                    "diff": "- 20.82269999757409\n+ 1\n"
+                  },
+                  "uuid": "e3e92c11-467e-47fd-9369-74c7553acde8",
+                  "parentUUID": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Validate if feedback \"hint\" finish earlier  than 1 ms",
+                  "fullTitle": "Threshold time testing  First Class of Feedback Validate if feedback \"hint\" finish earlier  than 1 ms",
+                  "timedOut": false,
+                  "duration": 1,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"next\", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"throw\", err); } _next(undefined); });",
+                  "err": {
+                    "message": "AssertionError: expected 20.694099998101592 to be below 1",
+                    "estack": "AssertionError: expected 20.694099998101592 to be below 1\n    at _callee2$ (dist-server/tests/sample-tests.js:155:47)\n    at tryCatch (node_modules/regenerator-runtime/runtime.js:63:40)\n    at Generator.invoke [as _invoke] (node_modules/regenerator-runtime/runtime.js:294:22)\n    at Generator.next (node_modules/regenerator-runtime/runtime.js:119:21)\n    at asyncGeneratorStep (dist-server/tests/sample-tests.js:25:103)\n    at _next (dist-server/tests/sample-tests.js:27:194)\n    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+                    "diff": "- 20.694099998101592\n+ 1\n"
+                  },
+                  "uuid": "f5c2f4c6-bcc5-4e23-8909-2d6e6b98554c",
+                  "parentUUID": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Validate if feedback \"inputTestCase\" finish earlier  than 1 ms",
+                  "fullTitle": "Threshold time testing  First Class of Feedback Validate if feedback \"inputTestCase\" finish earlier  than 1 ms",
+                  "timedOut": false,
+                  "duration": 1,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"next\", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"throw\", err); } _next(undefined); });",
+                  "err": {
+                    "message": "AssertionError: expected 20.50029999949038 to be below 1",
+                    "estack": "AssertionError: expected 20.50029999949038 to be below 1\n    at _callee2$ (dist-server/tests/sample-tests.js:155:47)\n    at tryCatch (node_modules/regenerator-runtime/runtime.js:63:40)\n    at Generator.invoke [as _invoke] (node_modules/regenerator-runtime/runtime.js:294:22)\n    at Generator.next (node_modules/regenerator-runtime/runtime.js:119:21)\n    at asyncGeneratorStep (dist-server/tests/sample-tests.js:25:103)\n    at _next (dist-server/tests/sample-tests.js:27:194)\n    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+                    "diff": "- 20.50029999949038\n+ 1\n"
+                  },
+                  "uuid": "becabfa7-30a6-4b4d-8eef-65f1b186fb35",
+                  "parentUUID": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Validate if feedback \"motivate\" finish earlier  than 100 ms",
+                  "fullTitle": "Threshold time testing  First Class of Feedback Validate if feedback \"motivate\" finish earlier  than 100 ms",
+                  "timedOut": false,
+                  "duration": 2,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"next\", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"throw\", err); } _next(undefined); });",
+                  "err": {},
+                  "uuid": "6067d926-69c8-40e8-b12b-a1269dc23a9b",
+                  "parentUUID": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Validate if feedback \"motivateHarder\" finish earlier  than 100 ms",
+                  "fullTitle": "Threshold time testing  First Class of Feedback Validate if feedback \"motivateHarder\" finish earlier  than 100 ms",
+                  "timedOut": false,
+                  "duration": 1,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"next\", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"throw\", err); } _next(undefined); });",
+                  "err": {},
+                  "uuid": "2715c521-724a-4229-a290-4b91d58fb358",
+                  "parentUUID": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Validate if feedback \"outputTestCase\" finish earlier  than 100 ms",
+                  "fullTitle": "Threshold time testing  First Class of Feedback Validate if feedback \"outputTestCase\" finish earlier  than 100 ms",
+                  "timedOut": false,
+                  "duration": 1,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"next\", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"throw\", err); } _next(undefined); });",
+                  "err": {},
+                  "uuid": "6107e91f-cd9a-481f-a45b-2215fa413b2a",
+                  "parentUUID": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Validate if feedback \"percentage\" finish earlier  than 100 ms",
+                  "fullTitle": "Threshold time testing  First Class of Feedback Validate if feedback \"percentage\" finish earlier  than 100 ms",
+                  "timedOut": false,
+                  "duration": 1,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"next\", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"throw\", err); } _next(undefined); });",
+                  "err": {},
+                  "uuid": "bc7479a5-c5c4-4528-bfd2-79f809afb04d",
+                  "parentUUID": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Validate if feedback \"submissionNumbers\" finish earlier  than 1 ms",
+                  "fullTitle": "Threshold time testing  First Class of Feedback Validate if feedback \"submissionNumbers\" finish earlier  than 1 ms",
+                  "timedOut": false,
+                  "duration": 1,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"next\", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, \"throw\", err); } _next(undefined); });",
+                  "err": {
+                    "message": "AssertionError: expected 20.41179999895394 to be below 1",
+                    "estack": "AssertionError: expected 20.41179999895394 to be below 1\n    at _callee2$ (dist-server/tests/sample-tests.js:155:47)\n    at tryCatch (node_modules/regenerator-runtime/runtime.js:63:40)\n    at Generator.invoke [as _invoke] (node_modules/regenerator-runtime/runtime.js:294:22)\n    at Generator.next (node_modules/regenerator-runtime/runtime.js:119:21)\n    at asyncGeneratorStep (dist-server/tests/sample-tests.js:25:103)\n    at _next (dist-server/tests/sample-tests.js:27:194)\n    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+                    "diff": "- 20.41179999895394\n+ 1\n"
+                  },
+                  "uuid": "5cd31eef-6351-41d0-8863-9148a713c18a",
+                  "parentUUID": "5f1f68a1-6e72-42b7-9cb1-7bdd0007f5e9",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "6067d926-69c8-40e8-b12b-a1269dc23a9b",
+                "2715c521-724a-4229-a290-4b91d58fb358",
+                "6107e91f-cd9a-481f-a45b-2215fa413b2a",
+                "bc7479a5-c5c4-4528-bfd2-79f809afb04d"
+              ],
+              "failures": [
+                "3c975f42-4dcd-489a-ab9d-2eb16d8f8e3b",
+                "e3e92c11-467e-47fd-9369-74c7553acde8",
+                "f5c2f4c6-bcc5-4e23-8909-2d6e6b98554c",
+                "becabfa7-30a6-4b4d-8eef-65f1b186fb35",
+                "5cd31eef-6351-41d0-8863-9148a713c18a"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 15,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 200000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 200000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 200000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "9.2.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.0.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "/mnt/e/INESC TEC/feedback-manager/public/execution-report/2022/03/15/12/43/56",
+        "reportTitle": "Test Execution Report",
+        "reportPageTitle": "Test Report",
+        "charts": true
+      },
+      "version": "6.0.1"
+    }
+  }
+}

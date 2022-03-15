@@ -30,7 +30,7 @@ export default {
                     "1": "incorrect xpath expression"
                 }
             ],
-            "user_id": 1,
+            "user_id": "202000388",
             "number_of_tests": 2
         }
     }

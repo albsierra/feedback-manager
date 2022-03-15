@@ -49,5 +49,8 @@
         "presets": [
             "@babel/preset-env"
         ]
+    },
+    "devDependencies": {
+        "axios": "^0.26.1"
     }
 }

@@ -11,7 +11,8 @@ module.exports = {
         let feedback = ""
         let target = []
         Object.keys(report.compilationErrors).forEach(function(key) {
-            feedback += `input : ${exercise.tests[key].input} -- output: ${exercise.tests[key].output} -- hint: ${exercise.tests[key].feedback.message} `;
+            feedback +=
+                ` -- hint: ${exercise.tests[key].feedback.message} `;
             feedback += "\r\n";
             target.push(key)
         });

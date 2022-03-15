@@ -2,7 +2,10 @@ import { db, findWithCriteria } from './dbManager';
 
 
 export default (student_id, exercise_id, number_of_tests) => {
-
+    console.log("xxx")
+    console.log(student_id);
+    console.log(exercise_id)
+    console.log("xxx")
 
     return new Promise((resolve, reject) => {
         db(() => {
@@ -17,6 +20,7 @@ export default (student_id, exercise_id, number_of_tests) => {
 
                 let number_of_submissions = 0
                 let already_solved = false
+                let date_of_already_solved_exercise = 0
                 let most_frequent_incorrect_test_case = []
                 let most_frequent_correct_test_case = []
 
@@ -36,8 +40,12 @@ export default (student_id, exercise_id, number_of_tests) => {
 
                     number_of_submissions = number_of_submissions + 1;
 
-                    if (element.number_of_correct_tests.length == element.number_of_tests)
+
+                    if (element.number_of_correct_tests.length == element.number_of_tests) {
                         already_solved = true
+                        date_of_already_solved_exercise = element.reported_time
+                    }
+
 
                     element.number_of_incorrect_tests.forEach(element => {
                         most_frequent_incorrect_test_case[element] = most_frequent_incorrect_test_case[element] + 1
@@ -50,10 +58,10 @@ export default (student_id, exercise_id, number_of_tests) => {
 
 
                 });
-
                 student_file.student_id = student_id
                 student_file.number_of_submissions = number_of_submissions
                 student_file.already_solved = already_solved
+                student_file.date_of_already_solved_exercise = date_of_already_solved_exercise
                 student_file.most_frequent_incorrect_test_case = most_frequent_incorrect_test_case
                 student_file.most_frequent_correct_test_case = most_frequent_correct_test_case
 
