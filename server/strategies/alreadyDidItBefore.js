@@ -1,7 +1,7 @@
 import feedbackItem from '../commons/feedbackItem';
 
 const feedback_name = "alreadyDidItBefore";
-const feedback_time = 1;
+const feedback_time = 200;
 module.exports = {
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
@@ -17,9 +17,6 @@ module.exports = {
             feedback = "You never have solved this exercise. Maybe try to request help of someone else";
 
         }
-
-
-
         return (new feedbackItem(feedback, 1, "INF", target, feedback_name))
 
 

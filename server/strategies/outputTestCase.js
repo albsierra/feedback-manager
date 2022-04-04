@@ -2,7 +2,7 @@ import feedbackItem from '../commons/feedbackItem';
 
 
 const feedback_name = "outputTestCase";
-const feedback_time = 100;
+const feedback_time = 200;
 module.exports = {
 
     "feedback_name": feedback_name,

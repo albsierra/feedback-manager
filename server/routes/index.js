@@ -2,18 +2,15 @@
 import express from "express";
 import { getBestFeedback } from '../strategies'
 import { defineTestSuiteAndAddTests } from '../tests/sample-tests';
-import Mocha from 'mocha';
 import moment from 'moment-timezone';
-import path from 'path'
-
+import path, { format } from 'path'
 var router = express.Router();
 
 router.get("/feedback/performance", async(req, res) => {
     delete require.cache[require.resolve('mocha')];
-    require('mocha');
+    var Mocha = require('mocha');
     const currentDateTime = moment().tz('Portugal').format('YYYY/MM/DD/HH/mm/ss');
     const reportDirectory = path.resolve(__dirname, `../../public/execution-report/${currentDateTime}`)
-
     var mocha = new Mocha({
         timeout: 200000,
         reporter: 'mochawesome',
@@ -25,13 +22,10 @@ router.get("/feedback/performance", async(req, res) => {
         }
     });
     mocha.cleanReferencesAfterRun(true)
-    var suite = (suiteName = 'Suite Name') => Mocha.Suite.create(mocha.suite, suiteName);
+    var suite = (suiteName = `-${Math.random() * 10000}-`) => Mocha.Suite.create(mocha.suite, suiteName);
     await defineTestSuiteAndAddTests(suite, Mocha.Test, Mocha.Suite);
     mocha.run((failures) => {
-
-
         res.redirect(`/execution-report/${currentDateTime}/mochawesome.html`)
-
     }).catch((err) => {
         console.log(err);
         res.sendStatus(500);
@@ -52,7 +46,6 @@ router.post("/", function(req, res) {
     let feedback = "";
     if (input) {
         if (input.reply.report) {
-
 
             getBestFeedback(input.reply.report, input.request.studentID, input).then((feedback) => {
                 console.log(feedback)

@@ -6,7 +6,7 @@ const HINTS = [
     "get real"
 ];
 const feedback_name = "percentage";
-const feedback_time = 100;
+const feedback_time = 200;
 module.exports = {
 
 

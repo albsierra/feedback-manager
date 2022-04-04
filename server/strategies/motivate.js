@@ -6,7 +6,7 @@ const HINTS = [
     "get real"
 ];
 const feedback_name = "motivate";
-const feedback_time = 100;
+const feedback_time = 200;
 module.exports = {
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,

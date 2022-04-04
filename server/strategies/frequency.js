@@ -1,7 +1,7 @@
 import feedbackItem from '../commons/feedbackItem';
 
 const feedback_name = "frequemcy";
-const feedback_time = 1;
+const feedback_time = 200;
 module.exports = {
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
