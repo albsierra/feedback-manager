@@ -2,10 +2,7 @@ import { db, findWithCriteria } from './dbManager';
 
 
 export default (student_id, exercise_id, number_of_tests) => {
-    console.log("xxx")
-    console.log(student_id);
-    console.log(exercise_id)
-    console.log("xxx")
+
 
     return new Promise((resolve, reject) => {
         db(() => {
@@ -16,18 +13,16 @@ export default (student_id, exercise_id, number_of_tests) => {
                 let student_file = {}
                 let feedback_already_reported = {}
 
-
-
                 let number_of_submissions = 0
                 let already_solved = false
                 let date_of_already_solved_exercise = 0
-                let most_frequent_incorrect_test_case = []
-                let most_frequent_correct_test_case = []
+                let incorrect_test_case_frequency = []
+                let correct_test_case_frequency = []
 
                 let aux = [...Array(number_of_tests).keys()];
                 aux.forEach(element => {
-                    most_frequent_incorrect_test_case[element.toString()] = 0
-                    most_frequent_correct_test_case[element.toString()] = 0
+                    incorrect_test_case_frequency[element.toString()] = 0
+                    correct_test_case_frequency[element.toString()] = 0
 
                 });
 
@@ -41,19 +36,19 @@ export default (student_id, exercise_id, number_of_tests) => {
                     number_of_submissions = number_of_submissions + 1;
 
 
-                    if (element.number_of_correct_tests.length == element.number_of_tests) {
+                    if (element.correct_tests.length == number_of_tests) {
                         already_solved = true
                         date_of_already_solved_exercise = element.reported_time
                     }
 
 
-                    element.number_of_incorrect_tests.forEach(element => {
-                        most_frequent_incorrect_test_case[element] = most_frequent_incorrect_test_case[element] + 1
+                    element.incorrect_tests.forEach(element => {
+                        incorrect_test_case_frequency[element] = incorrect_test_case_frequency[element] + 1
                     })
 
 
-                    element.number_of_correct_tests.forEach(element => {
-                        most_frequent_correct_test_case[element] = most_frequent_incorrect_test_case[element] + 1
+                    element.correct_tests.forEach(element => {
+                        correct_test_case_frequency[element] = correct_test_case_frequency[element] + 1
                     })
 
 
@@ -62,8 +57,8 @@ export default (student_id, exercise_id, number_of_tests) => {
                 student_file.number_of_submissions = number_of_submissions
                 student_file.already_solved = already_solved
                 student_file.date_of_already_solved_exercise = date_of_already_solved_exercise
-                student_file.most_frequent_incorrect_test_case = most_frequent_incorrect_test_case
-                student_file.most_frequent_correct_test_case = most_frequent_correct_test_case
+                student_file.incorrect_test_case_frequency = incorrect_test_case_frequency
+                student_file.correct_test_case_frequency = correct_test_case_frequency
 
 
                 resolve({ "feedback_already_reported": feedback_already_reported, "student_file": student_file });

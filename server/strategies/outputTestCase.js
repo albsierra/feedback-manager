@@ -9,10 +9,11 @@ module.exports = {
     "feedback_time": feedback_time,
     getFeedback: async(report, exercise, student_file) => {
         try {
-            console.log(report.compilationErrors)
             let feedback = ""
             let target = []
-            Object.keys(report.compilationErrors).forEach(function(key) {
+            const incorrect_tests = (report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
+
+            incorrect_tests.forEach(function(key) {
                 feedback += exercise.tests_contents_out[exercise.tests[key].id];
                 feedback += "\n";
                 target.push(key)

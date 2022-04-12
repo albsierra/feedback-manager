@@ -10,8 +10,9 @@ module.exports = {
 
         try {
             let feedback = ""
-            let target = []
-            Object.keys(report.compilationErrors).forEach(function(key) {
+            let target = [];
+            const incorrect_tests = (report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
+            incorrect_tests.forEach(function(key) {
                 feedback += JSON.stringify(exercise.tests_contents_in[exercise.tests[key].id]);
                 feedback += "\n";
                 target.push(key)

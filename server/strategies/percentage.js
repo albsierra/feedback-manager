@@ -14,10 +14,11 @@ module.exports = {
     "feedback_time": feedback_time,
     getFeedback: async(report, exercise, student_file) => {
 
+        const nWrong = (report.tests.map((value, index) => { return value.classify == "Accepted" ? 1 : 0 })).reduce((partialSum, a) => partialSum + a, 0);
 
-        const percentage = (report.compilationErrors.length / report.number_of_tests) - 1;
+        const percentage = (nWrong / report.tests.length);
 
-        const item = new feedbackItem(` The exercise is ${percentage}% correct `, 1, "INF", -1, feedback_name);
+        const item = new feedbackItem(` The exercise is ${percentage*100}% correct `, 1, "INF", -1, feedback_name);
 
         return item;
     }

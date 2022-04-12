@@ -33,7 +33,6 @@ router.get("/feedback/performance", async(req, res) => {
 })
 
 router.get("/configuration", async(req, res) => {
-    //todo public encryption to decode body 
     let config = JSON.parse(req.body)
     Object.keys(config).forEach(function(key) {
         process.env[key] = jsonData[key];
@@ -42,13 +41,12 @@ router.get("/configuration", async(req, res) => {
 
 });
 router.post("/", function(req, res) {
+    console.log(req.body)
     const input = JSON.parse(req.body.PEARL);
-    let feedback = "";
+
     if (input) {
         if (input.reply.report) {
-
             getBestFeedback(input.reply.report, input.request.studentID, input).then((feedback) => {
-                console.log(feedback)
                 res.send(feedback);
             }).catch((error) => {
                 console.log(error)

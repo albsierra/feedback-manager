@@ -14,31 +14,21 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
         var allFeedbacksSorted = []
         if (allFeedbacks.length > 0) {
             allFeedbacksSorted = allFeedbacks.sort(feedbackItem.compare)
-
-
-
             while (true) {
                 feedback = allFeedbacksSorted[0]
-
                 if (feedback_already_reported[allFeedbacksSorted[0].name] == undefined) {
                     break;
                 }
-
                 if (feedback_already_reported[allFeedbacksSorted[0].name].includes(allFeedbacksSorted[0].text)) {
-
                     allFeedbacksSorted.shift()
                     if (allFeedbacksSorted.length == 0) {
                         var feedback = new feedbackItem("hmm... I already give to you all feedbacks", 100, "error", -1);
                         break;
                     }
-
-
                 } else {
                     break;
                 }
-
             }
-
         }
         persist_feedback(evaluation_report, student_file.student_id, feedback.name, feedback.text, feedback_id => {
             persist_report(feedback_id, full_report);
@@ -61,12 +51,16 @@ function readStrategiesAndStart() {
 
 export function getBestFeedback(input, student_id, full_report) {
     return new Promise((resolve, reject) => {
-        if (input.compilationErrors.length > 0) {
+
+        const isWrong = (input.tests.map((value, index) => { return value.classify != "Accepted" ? 1 : 0 })).reduce((partialSum, a) => partialSum + a, 0);
+
+
+        if (isWrong) {
             {
                 if (strategies.length == 0) {
                     readStrategiesAndStart()
                 }
-                fillFile(student_id, input.exercise, input.number_of_tests).then(
+                fillFile(student_id, input.exercise, input.tests.length).then(
                     (data) => {
                         applyStrategies(input, data.student_file, data.feedback_already_reported, resolve, reject, full_report)
 
@@ -153,10 +147,8 @@ export function persist_feedback(evaluation_report, student_id, feedback_name, f
         insert({
                 "student_id": student_id,
                 "exercise_id": evaluation_report.exercise,
-                "compilationErrors": evaluation_report.compilationErrors,
-                "number_of_tests": evaluation_report.number_of_tests,
-                "number_of_correct_tests": evaluation_report.number_of_correct_tests,
-                "number_of_incorrect_tests": evaluation_report.number_of_incorrect_tests,
+                "correct_tests": (evaluation_report.tests.map((value, index) => { if (value == "Accepted") return index })).filter((value) => { return value != undefined ? true : false }),
+                "incorrect_tests": (evaluation_report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false }),
                 "feedback_text": feedback_text,
                 "feedback_name": feedback_name,
                 "reported_time": Date.now()
