@@ -14,7 +14,7 @@ export async function db(callback, document) {
 }
 export async function createIndex(index) {
     const result = await collection.createIndex(index);
-    console.log(`Index created: ${result}`);
+    // console.log(`Index created: ${result}`);
 
 }
 export function cehckIfExist(collection_name) {
@@ -37,6 +37,25 @@ export function cehckIfExist(collection_name) {
     })
 
 }
+
+
+export function remove(obj) {
+    return new Promise((resolve, reject) => {
+        collection.deleteOne(obj, function(err, result) {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve()
+            }
+
+        });
+    })
+
+
+}
+
+
 export function insert(obj) {
     return new Promise((resolve, reject) => {
         collection.insert(obj, function(err, result) {
@@ -61,6 +80,8 @@ export async function findWithCriteria(obj, sort_fields) {
 }
 
 export function closeConnection() {
-    client.close();
+    if (!!client && !!client.topology && client.topology.isConnected()) {
+        client.close();
+    }
 
 }

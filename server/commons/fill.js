@@ -18,7 +18,7 @@ export default (student_id, exercise_id, number_of_tests) => {
                 let date_of_already_solved_exercise = 0
                 let incorrect_test_case_frequency = []
                 let correct_test_case_frequency = []
-
+                let last_feedback_reported = undefined
                 let aux = [...Array(number_of_tests).keys()];
                 aux.forEach(element => {
                     incorrect_test_case_frequency[element.toString()] = 0
@@ -27,6 +27,13 @@ export default (student_id, exercise_id, number_of_tests) => {
                 });
 
                 records.forEach(element => {
+
+                    if (last_feedback_reported == undefined)
+                        last_feedback_reported = element
+                    else
+                    if (new Date(element.reported_time) > new Date(last_feedback_reported.reported_time))
+                        last_feedback_reported = element
+
 
                     if (feedback_already_reported[element.feedback_name] == undefined)
                         feedback_already_reported[element.feedback_name] = []
@@ -59,10 +66,24 @@ export default (student_id, exercise_id, number_of_tests) => {
                 student_file.date_of_already_solved_exercise = date_of_already_solved_exercise
                 student_file.incorrect_test_case_frequency = incorrect_test_case_frequency
                 student_file.correct_test_case_frequency = correct_test_case_frequency
+                student_file.last_feedback_reported = last_feedback_reported
+                if (last_feedback_reported != undefined) {
+                    db(() => {
+                        findWithCriteria({
+                            "feedback_id": last_feedback_reported._id,
+                        }).then((record) => {
+                            student_file.program = record[0].full_report.request.program
+                            resolve({ "feedback_already_reported": feedback_already_reported, "student_file": student_file });
+                        })
 
+                    }, "reports").catch((error) => {
+                        console.log("error {}")
+                        reject(error)
+                    });
+                } else {
+                    resolve({ "feedback_already_reported": feedback_already_reported, "student_file": student_file });
 
-                resolve({ "feedback_already_reported": feedback_already_reported, "student_file": student_file });
-
+                }
 
             });
         }, "feedbacks").catch((error) => {

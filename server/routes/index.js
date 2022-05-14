@@ -1,12 +1,13 @@
 // routes/index.js and users.js
 import express from "express";
-import { getBestFeedback } from '../strategies'
-import { defineTestSuiteAndAddTests } from '../tests/sample-tests';
+import { getBestFeedback, remove_feedback, remove_report } from '../strategies'
+import { defineTestSuiteAndAddTests, reports_id_list, feedbacks_id_list } from '../tests/sample-tests';
 import moment from 'moment-timezone';
 import path, { format } from 'path'
 var router = express.Router();
 
-router.get("/feedback/performance", async(req, res) => {
+router.get("/feedback/performance/:intent", async(req, res) => {
+    var intent = req.params.intent;
     delete require.cache[require.resolve('mocha')];
     var Mocha = require('mocha');
     const currentDateTime = moment().tz('Portugal').format('YYYY/MM/DD/HH/mm/ss');
@@ -23,14 +24,57 @@ router.get("/feedback/performance", async(req, res) => {
     });
     mocha.cleanReferencesAfterRun(true)
     var suite = (suiteName = `-${Math.random() * 10000}-`) => Mocha.Suite.create(mocha.suite, suiteName);
-    await defineTestSuiteAndAddTests(suite, Mocha.Test, Mocha.Suite);
+    let result = await defineTestSuiteAndAddTests(suite, Mocha.Test, Mocha.Suite, intent);
+
+
     mocha.run((failures) => {
-        res.redirect(`/execution-report/${currentDateTime}/mochawesome.html`)
+        setTimeout(() => {
+            if (intent == 2) {
+                console.log("intent == 2")
+                const r = (call, i) => {
+                    if (feedbacks_id_list[i] != undefined) {
+                        console.log("removendo feedback" + feedbacks_id_list[i] + "--" + i)
+                        remove_feedback({ _id: feedbacks_id_list[i] }, () => {
+                            i = i + 1;
+                            call(call, i)
+                        })
+                    } else {
+                        res.redirect(`/execution-report/${currentDateTime}/mochawesome.html`)
+
+                    }
+
+                }
+                const v = (call, i) => {
+                    if (reports_id_list[i] != undefined) {
+                        console.log("removendo report" + reports_id_list[i] + "--" + i)
+                        remove_report({ _id: reports_id_list[i] }, () => {
+                            i = i + 1;
+                            call(call, i)
+                        })
+                    } else {
+
+                        r(r, 0);
+                    }
+
+                }
+
+                v(v, 0);
+
+            } else {
+                console.log("intent == 1")
+                res.redirect(`/execution-report/${currentDateTime}/mochawesome.html`)
+            }
+        }, 3000)
+
+
     }).catch((err) => {
         console.log(err);
         res.sendStatus(500);
     });
-})
+
+
+});
+
 
 router.get("/configuration", async(req, res) => {
     let config = JSON.parse(req.body)
@@ -41,8 +85,8 @@ router.get("/configuration", async(req, res) => {
 
 });
 router.post("/", function(req, res) {
-    console.log(req.body)
-    const input = JSON.parse(req.body.PEARL);
+
+    const input = req.body.PEARL //JSON.parse();
 
     if (input) {
         if (input.reply.report) {

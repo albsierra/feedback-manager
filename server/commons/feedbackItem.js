@@ -11,6 +11,6 @@ module.exports = class {
     }
 
     static compare(a, b) {
-        return b.relevance - a.relevance;
+        return a.relevance - b.relevance;
     }
 }

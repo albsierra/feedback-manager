@@ -7,25 +7,30 @@ module.exports = {
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
     "getFeedback": async(report, exercise, student_file) => {
+        if (report.tests != undefined && report.tests.length > 0) {
+            let feedback = ""
+            let target = []
+            const incorrect_tests = (report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
 
-        let feedback = ""
-        let target = []
-        const incorrect_tests = (report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
+            incorrect_tests.forEach(function(key) {
+                if (exercise.tests[key].feedback != undefined) {
+                    feedback += ` -- hint: ${exercise.tests[key].feedback.message} `;
+                    feedback += "\r\n";
+                    target.push(key)
+                } else {
+                    feedback += ":(";
+                    feedback += "\r\n";
+                    target.push(key)
+                }
 
-        incorrect_tests.forEach(function(key) {
-            if (exercise.tests[key].feedback != undefined) {
-                feedback += ` -- hint: ${exercise.tests[key].feedback.message} `;
-                feedback += "\r\n";
-                target.push(key)
-            } else {
-                feedback += ":(";
-                feedback += "\r\n";
-                target.push(key)
-            }
+            });
 
-        });
+            return (new feedbackItem(feedback, 1, "INF", target, feedback_name))
+        } else {
+            return new feedbackItem(``, 0, "INF", -1, feedback_name);
 
-        return (new feedbackItem(feedback, 1, "INF", target, feedback_name))
+        }
+
 
 
     }

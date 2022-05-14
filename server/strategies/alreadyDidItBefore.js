@@ -9,7 +9,6 @@ module.exports = {
 
         let feedback = ""
         let target = []
-        console.log((student_file.date_of_already_solved_exercise))
         feedback = ""
         if (student_file.already_solved) {
             feedback = `You have already solved this exercise. Maybe try to review your old code submitted at ${(new Date(student_file.date_of_already_solved_exercise))}`;

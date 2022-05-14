@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { db, closeConnection, insert, createIndex, cehckIfExist } from './commons/dbManager'
+import { db, closeConnection, insert, createIndex, cehckIfExist, remove } from './commons/dbManager'
 import feedbackItem from './commons/feedbackItem'
 import { loadSchemaYAPEXIL, ProgrammingExercise } from "programming-exercise-juezlti";
 import fillFile from './commons/fill';
@@ -8,36 +8,45 @@ import fillFile from './commons/fill';
 const strategies = [];
 const cache = [];
 const FCG = async(programmingExercise, evaluation_report, student_file, feedback_already_reported, resolve, full_report, reject) => {
-    try {
-        const allFeedbacks = await Promise.all(strategies.map(s => s.getFeedback(evaluation_report, programmingExercise, student_file)));
-        var feedback = new feedbackItem("hmm...", 100, "error", -1);
-        var allFeedbacksSorted = []
-        if (allFeedbacks.length > 0) {
-            allFeedbacksSorted = allFeedbacks.sort(feedbackItem.compare)
-            while (true) {
-                feedback = allFeedbacksSorted[0]
-                if (feedback_already_reported[allFeedbacksSorted[0].name] == undefined) {
-                    break;
-                }
-                if (feedback_already_reported[allFeedbacksSorted[0].name].includes(allFeedbacksSorted[0].text)) {
-                    allFeedbacksSorted.shift()
-                    if (allFeedbacksSorted.length == 0) {
-                        var feedback = new feedbackItem("hmm... I already give to you all feedbacks", 100, "error", -1);
+
+    if (full_report.request.program != student_file.program) {
+
+        try {
+            const allFeedbacks = await Promise.all(strategies.map(s => s.getFeedback(evaluation_report, programmingExercise, student_file)));
+            var feedback = new feedbackItem("hmm...", 100, "error", -1);
+            var allFeedbacksSorted = []
+            if (allFeedbacks.length > 0) {
+                allFeedbacksSorted = allFeedbacks.sort(feedbackItem.compare)
+                while (true) {
+                    feedback = allFeedbacksSorted[0]
+                    if (feedback_already_reported[allFeedbacksSorted[0].name] == undefined) {
                         break;
                     }
-                } else {
-                    break;
+                    if (feedback_already_reported[allFeedbacksSorted[0].name].includes(allFeedbacksSorted[0].text)) {
+                        allFeedbacksSorted.shift()
+                        if (allFeedbacksSorted.length == 0) {
+                            var feedback = new feedbackItem("hmm... I already give to you all feedbacks", 100, "error", -1);
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
                 }
             }
+            persist_feedback(evaluation_report, student_file.student_id, feedback.name, feedback.text, feedback_id => {
+                persist_report(feedback_id, full_report);
+            });
+            resolve(feedback.text);
+        } catch (err) {
+            console.log(err)
+            reject(err)
         }
-        persist_feedback(evaluation_report, student_file.student_id, feedback.name, feedback.text, feedback_id => {
-            persist_report(feedback_id, full_report);
-        });
-        resolve(feedback.text);
-    } catch (err) {
-        console.log(err)
-        reject(err)
+    } else {
+
+        resolve(`Your current submission is exactly the previous one. Please try to think carefully before sending your answer.`);
     }
+
+
 }
 
 
@@ -146,6 +155,7 @@ export function persist_feedback(evaluation_report, student_id, feedback_name, f
     let ins = () => {
         insert({
                 "student_id": student_id,
+
                 "exercise_id": evaluation_report.exercise,
                 "correct_tests": (evaluation_report.tests.map((value, index) => { if (value == "Accepted") return index })).filter((value) => { return value != undefined ? true : false }),
                 "incorrect_tests": (evaluation_report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false }),
@@ -155,7 +165,7 @@ export function persist_feedback(evaluation_report, student_id, feedback_name, f
             }
 
         ).then((inserted_id) => {
-            console.log(inserted_id)
+            //console.log(inserted_id)
             closeConnection();
             if (callback != undefined) {
                 callback(inserted_id);
@@ -167,7 +177,7 @@ export function persist_feedback(evaluation_report, student_id, feedback_name, f
     db(() => {
         cehckIfExist("feedbacks").then(
             (flag) => {
-                console.log(flag);
+                // console.log(flag);
                 if (!flag) {
                     createIndex({
                         student_id: 1,
@@ -187,6 +197,53 @@ export function persist_feedback(evaluation_report, student_id, feedback_name, f
     }, "feedbacks");
 }
 
+
+
+export function remove_feedback(obj, callback) {
+    let rmv = () => {
+        remove(obj).then(() => {
+            // console.log(result)
+            closeConnection();
+            if (callback != undefined) {
+                callback();
+            }
+        });
+    }
+
+    db(() => {
+        cehckIfExist("feedbacks").then(
+            () => {
+                rmv();
+            }
+        ).catch((err) => {
+            console.log(err);
+        })
+    }, "feedbacks");
+}
+
+
+export function remove_report(obj, callback) {
+    let rmv = () => {
+        remove(obj).then(() => {
+            // console.log(result)
+            closeConnection();
+            if (callback != undefined) {
+                callback();
+            }
+        });
+    }
+    db(() => {
+        cehckIfExist("reports").then(
+            () => {
+                rmv();
+            }
+        ).catch((err) => {
+            console.log(err);
+        })
+    }, "reports");
+}
+
+
 export function persist_report(feedback_id, full_report, callback) {
     let ins = () => {
         insert({
@@ -194,7 +251,7 @@ export function persist_report(feedback_id, full_report, callback) {
             "full_report": full_report,
             "reported_time": Date.now()
         }).then((inserted_id) => {
-            console.log(inserted_id)
+            // console.log(inserted_id)
             closeConnection();
             if (callback != undefined) {
                 callback(inserted_id);
@@ -202,11 +259,10 @@ export function persist_report(feedback_id, full_report, callback) {
 
         });
     }
-
     db(() => {
         cehckIfExist("reports").then(
             (flag) => {
-                console.log(flag);
+                //console.log(flag);
                 if (!flag) {
                     createIndex({
                         feedback_id: 1
