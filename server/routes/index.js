@@ -86,7 +86,7 @@ router.get("/configuration", async(req, res) => {
 });
 router.post("/", function(req, res) {
 
-    const input = req.body.PEARL //JSON.parse();
+    const input = req.body //JSON.parse();
 
     if (input) {
         if (input.reply.report) {
