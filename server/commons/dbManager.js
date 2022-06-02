@@ -1,12 +1,14 @@
 const { MongoClient } = require('mongodb');
 import 'regenerator-runtime/runtime'
-const client = new MongoClient(process.env.URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient(process.env.FEEDBACK_MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 var collection
 
 
 export async function db(callback, document) {
     // Use connect method to connect to the server
+
     client.connect(err => {
+        if(err) throw err;
         collection = client.db("JUEZLTI").collection(document);
         callback()
     })

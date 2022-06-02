@@ -22,7 +22,7 @@ module.exports = {
 
             } else if (old_number_of_correct_tests_case < current_number_of_correct_tests_case) {
                 feedback = `You improved!!. In the last submission, you got ${old_number_of_correct_tests_case
-                    }test case right, now you got test case ${current_number_of_correct_tests_case}. Congratulations `;
+                    } test case right, now you got test case ${current_number_of_correct_tests_case}. Congratulations `;
             } else {
                 feedback = `Hey, take care. The last submission passed more test cases than this current submission`;
 
