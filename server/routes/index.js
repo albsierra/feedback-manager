@@ -86,12 +86,13 @@ router.get("/configuration", async(req, res) => {
 });
 router.post("/", function(req, res) {
 
-    const input = req.body //JSON.parse();
+    var input = req.body //JSON.parse();
 
     if (input) {
         if (input.reply.report) {
             getBestFeedback(input.reply.report, input.request.studentID, input).then((feedback) => {
-                res.send(feedback);
+                input.summary.feedback = feedback
+                res.json(input);
             }).catch((error) => {
                 console.log(error)
                 res.sendStatus(500)
@@ -102,7 +103,8 @@ router.post("/", function(req, res) {
         }
     } else {
         console.log("Compilation error.");
-        res.send("Compilation error. You should try to verify if the XPath expression that you submit is correct.");
+        input.summary.feedback = "Compilation error. You should try to verify if the XPath expression that you submit is correct."
+        res.json(input);
     }
 
 
