@@ -4,9 +4,23 @@ import { db, closeConnection, insert, createIndex, cehckIfExist, remove } from '
 import feedbackItem from './commons/feedbackItem'
 import { loadSchemaYAPEXIL, ProgrammingExercise } from "programming-exercise-juezlti";
 import fillFile from './commons/fill';
-
+import internal from 'stream';
 const strategies = [];
 const cache = [];
+const compileErros = ["Output Limit Exceeded",
+    "Memory Limit Exceeded",
+    "Time Limit Exceeded",
+    "Invalid Function",
+    "Runtime Error",
+    "Compile Time Error",
+    "Invalid Submission",
+    "Program Size Exceeded",
+    "Presentation Error"
+]
+
+
+
+
 const FCG = async(programmingExercise, evaluation_report, student_file, feedback_already_reported, resolve, full_report, reject) => {
 
     if (full_report.request.program != student_file.program) {
@@ -60,11 +74,16 @@ function readStrategiesAndStart() {
 
 export function getBestFeedback(input, student_id, full_report) {
     return new Promise((resolve, reject) => {
+        console.log("input.classify " + full_report.summary.classify)
+        const isWrongBecauseOfACompilationProblem = compileErros.includes(full_report.summary.classify);
+        const isCorrect = full_report.summary.classify == "Accepted";
 
-        const isWrong = (input.tests.map((value, index) => { return value.classify != "Accepted" ? 1 : 0 })).reduce((partialSum, a) => partialSum + a, 0);
 
 
-        if (isWrong) {
+        console.log("isCorrect " + isCorrect)
+        console.log("isWrongBecauseOfACompilationProblem " + isWrongBecauseOfACompilationProblem)
+
+        if (!isCorrect && !isWrongBecauseOfACompilationProblem) {
             {
                 if (strategies.length == 0) {
                     readStrategiesAndStart()
@@ -80,7 +99,7 @@ export function getBestFeedback(input, student_id, full_report) {
 
                 });
             }
-        } else {
+        } else if (isCorrect) {
 
             let feedback_text = "Congratulations!!!! you have submitted the correct answer";
 
@@ -90,20 +109,26 @@ export function getBestFeedback(input, student_id, full_report) {
                 number_of_correct_tests.push(`${index}`);
             });
 
-            let evaluation_report = {
-                "exercise": input.exercise,
-                "compilationErrors": [],
-                "number_of_tests": input.number_of_tests,
-                "number_of_correct_tests": number_of_correct_tests,
-                "number_of_incorrect_tests": [],
-            }
+
             persist_feedback(input, student_id, "Congratulations", feedback_text, feedback_id => {
                 persist_report(feedback_id, full_report);
             });
             resolve(feedback_text);
+        } else if (isWrongBecauseOfACompilationProblem) {
+
+            let evaluation_report = {
+                "exercise": input.exercise,
+                "compilationErrors": [],
+                "number_of_tests": input.number_of_tests,
+                "tests": [],
+
+            }
+
+            persist_feedback(evaluation_report, student_id, full_report.summary.classify, full_report.summary.feedback, feedback_id => {
+                persist_report(feedback_id, full_report);
+            });
+            resolve(full_report.summary.feedback);
         }
-
-
 
     })
 

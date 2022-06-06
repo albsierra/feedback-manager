@@ -91,6 +91,9 @@ router.post("/", function(req, res) {
     if (input) {
         if (input.reply.report) {
             getBestFeedback(input.reply.report, input.request.studentID, input).then((feedback) => {
+                if (("summary" in input) == false) {
+                    input.summary = {}
+                }
                 input.summary.feedback = feedback
                 res.json(input);
             }).catch((error) => {
