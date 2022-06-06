@@ -97,7 +97,7 @@ export function getBestFeedback(input, student_id, full_report) {
                 "number_of_correct_tests": number_of_correct_tests,
                 "number_of_incorrect_tests": [],
             }
-            persist_feedback(evaluation_report, student_id, "Congratulations", feedback_text, feedback_id => {
+            persist_feedback(input, student_id, "Congratulations", feedback_text, feedback_id => {
                 persist_report(feedback_id, full_report);
             });
             resolve(feedback_text);
