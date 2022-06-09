@@ -6,7 +6,6 @@ import { loadSchemaYAPEXIL, ProgrammingExercise } from "programming-exercise-jue
 import fillFile from './commons/fill';
 import internal from 'stream';
 const strategies = [];
-const cache = [];
 const compileErros = ["Output Limit Exceeded",
     "Memory Limit Exceeded",
     "Time Limit Exceeded",
@@ -138,40 +137,34 @@ export function getBestFeedback(input, student_id, full_report) {
 
 function applyStrategies(input, student_file, feedback_already_reported, resolve, reject, full_report) {
 
-    if (cache.includes(input.exercise)) {
-        ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
+    ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
         then((programmingExercise) => {
             FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
         }).catch((err) => {
-            console.log(err)
-            reject("The learning object request is already in cache but was not possible to read")
-        })
-
-    } else {
-        cache.push(input.exercise)
-        loadSchemaYAPEXIL().then(() => {
-            ProgrammingExercise
-                .loadRemoteExercise(input.exercise, {
-                    'BASE_URL': process.env.BASE_URL,
-                    'EMAIL': process.env.EMAIL,
-                    'PASSWORD': process.env.PASSWORD,
-                })
-                .then(async(programmingExercise) => {
+            loadSchemaYAPEXIL().then(() => {
+                ProgrammingExercise
+                    .loadRemoteExercise(input.exercise, {
+                        'BASE_URL': process.env.BASE_URL,
+                        'EMAIL': process.env.EMAIL,
+                        'PASSWORD': process.env.PASSWORD,
+                    })
+                    .then(async (programmingExercise) => {
                         FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
                         programmingExercise.serialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`)
                     }
 
-                ).catch((err) => {
-                    console.log(err)
-                    console.log("erro at  function applyStrategies when loadRemoteExercise  ");
-                    resolve(null)
-                });
-        }).catch((err) => {
-            console.log(err)
-            console.log("erro at  function applyStrategies when loadSchemaYAPEXIL  ");
-            resolve(null)
+                    ).catch((err) => {
+                        console.log(err)
+                        console.log("error at  function applyStrategies when loadRemoteExercise  ");
+                        reject(err)
+                    });
+            }).catch((err) => {
+                console.log(err)
+                console.log("error at  function applyStrategies when loadSchemaYAPEXIL  ");
+                reject(err)
+            })
         })
-    }
+
 }
 
 

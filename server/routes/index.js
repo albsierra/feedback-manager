@@ -98,18 +98,13 @@ router.post("/", function(req, res) {
                 res.json(input);
             }).catch((error) => {
                 console.log(error)
-                res.sendStatus(500)
+                res.status(500).send(error)
             });
 
         } else {
-            res.sendStatus(500);
+            res.status(400).send(new Error('Wrong PEARL object received by feedback.'));
         }
-    } else {
-        console.log("Compilation error.");
-        input.summary.feedback = "Compilation error. You should try to verify if the XPath expression that you submit is correct."
-        res.json(input);
     }
-
 
 });
 
