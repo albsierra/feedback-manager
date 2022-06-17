@@ -9,7 +9,7 @@ module.exports = {
     "getFeedback": async(report, exercise, student_file) => {
 
         try {
-            let feedback = ""
+            let feedback = "Test evaluation was performed using the following inputs:\n"
             let target = [];
             const incorrect_tests = (report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
             incorrect_tests.forEach(function(key) {
@@ -18,7 +18,7 @@ module.exports = {
                 target.push(key)
             });
 
-            return (new feedbackItem(feedback, 1, "INF", target, feedback_name))
+            return (new feedbackItem(feedback, 5, "INF", target, feedback_name))
         } catch (err) {
             console.log(err)
             return (err);

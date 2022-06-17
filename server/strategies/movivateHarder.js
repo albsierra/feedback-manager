@@ -14,7 +14,7 @@ module.exports = {
     "getFeedback": async(report, exercise, student_file) => {
         const some = Math.floor(Math.random() * HINTS.length);
         const relevance = Math.floor(Math.random() * 2);
-        const item = new feedbackItem(HINTS[some], 1, "APO", -1, feedback_name);
+        const item = new feedbackItem(HINTS[some], 6, "APO", -1, feedback_name);
         return item;
     }
 };

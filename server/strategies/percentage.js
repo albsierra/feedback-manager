@@ -22,7 +22,7 @@ module.exports = {
 
             return item;
         } else {
-            return new feedbackItem(``, 0, "INF", -1, feedback_name);
+            return new feedbackItem(``, 0, "INF", 2, feedback_name);
 
         }
 

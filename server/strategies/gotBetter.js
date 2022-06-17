@@ -30,7 +30,7 @@ module.exports = {
 
 
 
-            return (new feedbackItem(feedback, -1, "INF", -1, feedback_name))
+            return (new feedbackItem(feedback, 1, "INF", -1, feedback_name))
         }
 
 

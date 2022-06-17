@@ -9,7 +9,7 @@ module.exports = {
     "feedback_time": feedback_time,
     getFeedback: async(report, exercise, student_file) => {
         try {
-            let feedback = ""
+            let feedback = "The correct results would be:\n"
             let target = []
             const incorrect_tests = (report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
 
@@ -18,7 +18,7 @@ module.exports = {
                 feedback += "\n";
                 target.push(key)
             });
-            return (new feedbackItem(feedback, 1, "INF", target, feedback_name))
+            return (new feedbackItem(feedback, 5, "INF", target, feedback_name))
         } catch (err) {
             console.log(err);
             return err
