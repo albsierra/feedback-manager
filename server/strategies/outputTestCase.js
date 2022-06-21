@@ -11,7 +11,7 @@ module.exports = {
         try {
             let feedback = "The correct results would be:\n"
             let target = []
-            const incorrect_tests = (report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
+            const incorrect_tests = (report.tests.map((value, index) => { if (value.classify != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
 
             incorrect_tests.forEach(function(key) {
                 feedback += exercise.tests_contents_out[exercise.tests[key].id];

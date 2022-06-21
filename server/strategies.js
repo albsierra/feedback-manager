@@ -25,10 +25,22 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
     if (full_report.request.program != student_file.program) {
 
         try {
-            const allFeedbacks = await Promise.all(strategies.map(s => s.getFeedback(evaluation_report, programmingExercise, student_file)));
+            let allFeedbacks = await Promise.all(strategies.map(s => s.getFeedback(evaluation_report, programmingExercise, student_file)));
             var feedback = new feedbackItem("hmm...", 100, "error", -1);
             var allFeedbacksSorted = []
             if (allFeedbacks.length > 0) {
+
+
+
+                for (let f of allFeedbacks) {
+                    if (Array.isArray(f)) {
+                        allFeedbacks.push(...f);
+                    }
+                }
+                allFeedbacks = allFeedbacks.filter((v) => {
+                    return !Array.isArray(v);
+                })
+
                 allFeedbacksSorted = allFeedbacks.sort(feedbackItem.compare)
                 while (true) {
                     feedback = allFeedbacksSorted[0]
@@ -38,7 +50,7 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
                     if (feedback_already_reported[allFeedbacksSorted[0].name].includes(allFeedbacksSorted[0].text)) {
                         allFeedbacksSorted.shift()
                         if (allFeedbacksSorted.length == 0) {
-                            var feedback = new feedbackItem("hmm... I already give to you all feedbacks", 100, "error", -1);
+                            feedback = new feedbackItem("hmm... I already give to you all feedbacks", 100, "error", -1);
                             break;
                         }
                     } else {
@@ -138,32 +150,32 @@ export function getBestFeedback(input, student_id, full_report) {
 function applyStrategies(input, student_file, feedback_already_reported, resolve, reject, full_report) {
 
     ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
-        then((programmingExercise) => {
-            FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
-        }).catch((err) => {
-            loadSchemaYAPEXIL().then(() => {
-                ProgrammingExercise
-                    .loadRemoteExercise(input.exercise, {
-                        'BASE_URL': process.env.BASE_URL,
-                        'EMAIL': process.env.EMAIL,
-                        'PASSWORD': process.env.PASSWORD,
-                    })
-                    .then(async (programmingExercise) => {
+    then((programmingExercise) => {
+        FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
+    }).catch((err) => {
+        loadSchemaYAPEXIL().then(() => {
+            ProgrammingExercise
+                .loadRemoteExercise(input.exercise, {
+                    'BASE_URL': process.env.BASE_URL,
+                    'EMAIL': process.env.EMAIL,
+                    'PASSWORD': process.env.PASSWORD,
+                })
+                .then(async(programmingExercise) => {
                         FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
                         programmingExercise.serialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`)
                     }
 
-                    ).catch((err) => {
-                        console.log(err)
-                        console.log("error at  function applyStrategies when loadRemoteExercise  ");
-                        reject(err)
-                    });
-            }).catch((err) => {
-                console.log(err)
-                console.log("error at  function applyStrategies when loadSchemaYAPEXIL  ");
-                reject(err)
-            })
+                ).catch((err) => {
+                    console.log(err)
+                    console.log("error at  function applyStrategies when loadRemoteExercise  ");
+                    reject(err)
+                });
+        }).catch((err) => {
+            console.log(err)
+            console.log("error at  function applyStrategies when loadSchemaYAPEXIL  ");
+            reject(err)
         })
+    })
 
 }
 
