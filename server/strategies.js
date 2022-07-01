@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { db, closeConnection, insert, createIndex, cehckIfExist, remove } from './commons/dbManager'
 import feedbackItem from './commons/feedbackItem'
-import { loadSchemaYAPEXIL, ProgrammingExercise } from "programming-exercise-juezlti";
+import { ProgrammingExercise } from "programming-exercise-juezlti";
 import fillFile from './commons/fill';
 import internal from 'stream';
 const strategies = [];
@@ -153,28 +153,24 @@ function applyStrategies(input, student_file, feedback_already_reported, resolve
     then((programmingExercise) => {
         FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
     }).catch((err) => {
-        loadSchemaYAPEXIL().then(() => {
-            ProgrammingExercise
-                .loadRemoteExercise(input.exercise, {
-                    'BASE_URL': process.env.BASE_URL,
-                    'EMAIL': process.env.EMAIL,
-                    'PASSWORD': process.env.PASSWORD,
-                })
-                .then(async(programmingExercise) => {
-                        FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
-                        programmingExercise.serialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`)
-                    }
 
-                ).catch((err) => {
-                    console.log(err)
-                    console.log("error at  function applyStrategies when loadRemoteExercise  ");
-                    reject(err)
-                });
-        }).catch((err) => {
-            console.log(err)
-            console.log("error at  function applyStrategies when loadSchemaYAPEXIL  ");
-            reject(err)
-        })
+        ProgrammingExercise
+            .loadRemoteExercise(input.exercise, {
+                'BASE_URL': process.env.BASE_URL,
+                'EMAIL': process.env.EMAIL,
+                'PASSWORD': process.env.PASSWORD,
+            })
+            .then(async(programmingExercise) => {
+                    FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
+                    programmingExercise.serialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`)
+                }
+
+            ).catch((err) => {
+                console.log(err)
+                console.log("error at  function applyStrategies when loadRemoteExercise  ");
+                reject(err)
+            });
+
     })
 
 }

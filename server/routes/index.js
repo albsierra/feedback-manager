@@ -2,6 +2,7 @@
 import express from "express";
 import { getBestFeedback, remove_feedback, remove_report } from '../strategies'
 import { defineTestSuiteAndAddTests, reports_id_list, feedbacks_id_list } from '../tests/sample-tests';
+import { loadSchemaYAPEXIL } from "programming-exercise-juezlti";
 import moment from 'moment-timezone';
 import path, { format } from 'path'
 var router = express.Router();
@@ -84,10 +85,9 @@ router.get("/configuration", async(req, res) => {
 
 
 });
-router.post("/", function(req, res) {
-
+router.post("/", async function(req, res) {
+    await loadSchemaYAPEXIL();
     var input = req.body //JSON.parse();
-
     if (input) {
         if (input.reply.report) {
             getBestFeedback(input.reply.report, input.request.studentID, input).then((feedback) => {
