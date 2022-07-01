@@ -17,7 +17,7 @@
     "scripts": {
         "start": "npm run prod",
         "build": "npm-run-all clean transpile",
-        "server": "BASE_URL=http://fgpe.dcc.fc.up.pt/api EMAIL=info@juezlti.eu PASSWORD=Ju3zLT1. STRATEGIES_FOLDER=strategies FEEDBACK_MONGO_URI='mongodb://127.0.0.1:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false' PORT=8081 node ./dist-server/bin/www",
+        "server": "STRATEGIES_FOLDER=strategies node ./dist-server/bin/www",
         "dev": "NODE_ENV=development npm-run-all build server",
         "prod": "NODE_ENV=production npm-run-all build server",
         "transpile": "babel ./server --out-dir dist-server",
