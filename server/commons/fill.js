@@ -1,9 +1,8 @@
-import { db, findWithCriteria } from './dbManager';
+//import { db, findWithCriteria } from './dbManager.js';
+var {db, findWithCriteria} = require('./dbManager.js');
 
 
-export default (student_id, exercise_id, number_of_tests) => {
-
-
+module.exports = (student_id, exercise_id, number_of_tests) => {
     return new Promise((resolve, reject) => {
         db(() => {
             findWithCriteria({
@@ -67,7 +66,9 @@ export default (student_id, exercise_id, number_of_tests) => {
                 student_file.incorrect_test_case_frequency = incorrect_test_case_frequency
                 student_file.correct_test_case_frequency = correct_test_case_frequency
                 student_file.last_feedback_reported = last_feedback_reported
-                if (last_feedback_reported != undefined) {
+                console.log(student_file)
+                if (student_file.last_feedback_reported != undefined) {
+                    console.log("Last feedback nao undefined")
                     db(() => {
                         findWithCriteria({
                             "feedback_id": last_feedback_reported._id,
@@ -76,20 +77,15 @@ export default (student_id, exercise_id, number_of_tests) => {
                             resolve({ "feedback_already_reported": feedback_already_reported, "student_file": student_file });
                         })
 
-                    }, "reports").catch((error) => {
-                        console.log("error {}")
-                        reject(error)
-                    });
+                    }, "reports")
                 } else {
+                    console.log("Last feedback undefined")
+                    console.log(last_feedback_reported)
                     resolve({ "feedback_already_reported": feedback_already_reported, "student_file": student_file });
-
                 }
 
             });
-        }, "feedbacks").catch((error) => {
-            console.log("error {}")
-            reject(error)
-        });
+        }, "feedbacks");
 
 
     })

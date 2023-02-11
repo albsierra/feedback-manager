@@ -3,4 +3,4 @@ dist-server/
 public/execution-report/
 minimal feedback/dist-server/
 minimal feedback/node_modules/
-
+.env

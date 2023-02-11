@@ -1,25 +1,26 @@
 const { MongoClient } = require('mongodb');
-import 'regenerator-runtime/runtime'
-const client = new MongoClient(process.env.FEEDBACK_MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+//import 'regenerator-runtime/runtime.js'
+require('regenerator-runtime/runtime.js')
+const client = new MongoClient("mongodb+srv://luiscodeplayground:xvJ6yLg2pJd8wujt@cluster0.hssftfo.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
 var collection
 
-
-export async function db(callback, document) {
+module.exports = {
+    
+db:function db(callback, document) {
     // Use connect method to connect to the server
-
     client.connect(err => {
         if(err) throw err;
         collection = client.db("JUEZLTI").collection(document);
         callback()
     })
+},
 
-}
-export async function createIndex(index) {
+createIndex:async function createIndex(index) {
     const result = await collection.createIndex(index);
     // console.log(`Index created: ${result}`);
+},
 
-}
-export function cehckIfExist(collection_name) {
+cehckIfExist:function cehckIfExist(collection_name) {
     return new Promise((resolve, reject) => {
         let flag = false;
         client.db("JUEZLTI").collections(function(e, cols) {
@@ -38,10 +39,10 @@ export function cehckIfExist(collection_name) {
 
     })
 
-}
+},
 
 
-export function remove(obj) {
+remove:function remove(obj) {
     return new Promise((resolve, reject) => {
         collection.deleteOne(obj, function(err, result) {
             if (err) {
@@ -53,12 +54,10 @@ export function remove(obj) {
 
         });
     })
+},
 
 
-}
-
-
-export function insert(obj) {
+insert:function insert(obj) {
     return new Promise((resolve, reject) => {
         collection.insert(obj, function(err, result) {
             if (err) {
@@ -72,18 +71,19 @@ export function insert(obj) {
     })
 
 
-}
+},
 
-export async function findWithCriteria(obj, sort_fields) {
+findWithCriteria:async function findWithCriteria(obj, sort_fields) {
     if (sort_fields != undefined)
         return await collection.find(obj).sort(sort_fields).toArray();
     else
         return await collection.find(obj).toArray();
-}
+},
 
-export function closeConnection() {
+closeConnection:function closeConnection() {
     if (!!client && !!client.topology && client.topology.isConnected()) {
         client.close();
     }
+}
 
 }

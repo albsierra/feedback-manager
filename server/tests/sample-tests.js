@@ -1,13 +1,13 @@
-import { expect } from 'chai';
-import fs, { rm } from 'fs';
-import path from 'path';
-import report from './report';
-import reportValue from 'mochawesome/addContext'
-import { loadSchemaYAPEXIL, ProgrammingExercise } from "programming-exercise-juezlti";
-import { performance } from 'perf_hooks';
-import fillFile from '../commons/fill';
-import feedbackItem from '../commons/feedbackItem'
-import { persist_feedback, persist_report } from '../strategies'
+var expect = require('chai')
+var fs = require("fs")
+var path = require("path")
+var report = require('./report')
+var reportValue = require('mochawesome/addContext.js')
+var {loadSchemaYAPEXIL, ProgrammingExercise} = require("programming-exercise-juezlti")
+var performance = require('perf_hooks')
+var fillFile = require('../commons/fill.js')
+var feedbackItem = require('../commons/feedbackItem.js')
+var {persist_feedback, persist_report} = require('../strategies.js')
 
 var feedbacks_id_list = []
 var reports_id_list = []
@@ -28,9 +28,9 @@ const defineTestSuiteAndAddTests = async(suite, Test, suiteInstance, type) => {
 
     programmingExercise = await ProgrammingExercise
         .loadRemoteExercise(report.request.learningObject, {
-            'BASE_URL': process.env.BASE_URL,
-            'EMAIL': process.env.EMAIL,
-            'PASSWORD': process.env.PASSWORD,
+            'BASE_URL': "",
+            'EMAIL': "",
+            'PASSWORD': "",
         })
 
 
@@ -99,11 +99,11 @@ const scalableStrategiesTest = (Test, suiteInstance, parentSuite) => {
             if (feedback != undefined) {
                 feedback_list.push(feedback)
                 persist_feedback(report.reply.report, report.request.studentID, feedback.name, feedback.text, feedback_id => {
-                    // console.log("inserido feedback")
+                    console.log("inserido feedback")
                     feedbacks_id_list.push(feedback_id)
                     persist_report(feedback_id, report, report_id => {
                         reports_id_list.push(report_id)
-                            // console.log("inserido report")
+                            console.log("inserido report")
                         fn();
                     });
                 });
@@ -112,7 +112,6 @@ const scalableStrategiesTest = (Test, suiteInstance, parentSuite) => {
         }
 
         await fn();
-
 
     }));
 

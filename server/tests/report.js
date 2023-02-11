@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     "summary":{
         "classify" :  "Wrong Answer",
         "feedback":""
