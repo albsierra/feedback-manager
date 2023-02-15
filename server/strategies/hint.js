@@ -1,5 +1,4 @@
-import feedbackItem from '../commons/feedbackItem';
-import { ProgrammingExercise } from "programming-exercise-juezlti";
+var feedbackItem = require('../commons/feedbackItem')
 
 const feedback_name = "hint";
 const feedback_time = 100;
@@ -19,7 +18,7 @@ module.exports = {
 
                     if (Symbol.iterator in Object(exercise.tests[key].feedback)) {
                         for (let h of exercise.tests[key].feedback) {
-                            let feedback = ` hint:\n"${h.message} `;
+                            let feedback = `Hint:\n"${h.message} `;
                             feedbacks.push(new feedbackItem(feedback, 1, "INF", -1, feedback_name))
                         }
                     }

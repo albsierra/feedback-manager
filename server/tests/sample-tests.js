@@ -8,6 +8,7 @@ var performance = require('perf_hooks')
 var fillFile = require('../commons/fill.js')
 var feedbackItem = require('../commons/feedbackItem.js')
 var {persist_feedback, persist_report} = require('../strategies.js')
+require('dotenv').config()
 
 var feedbacks_id_list = []
 var reports_id_list = []
@@ -24,15 +25,12 @@ const defineTestSuiteAndAddTests = async(suite, Test, suiteInstance, type) => {
     files.forEach(file =>
         strategies.push(require(path.join(__dirname, "..", process.env.STRATEGIES_FOLDER, file))));
 
-
-
     programmingExercise = await ProgrammingExercise
         .loadRemoteExercise(report.request.learningObject, {
-            'BASE_URL': "",
-            'EMAIL': "",
-            'PASSWORD': "",
+            'BASE_URL': process.env.BASE_URL,
+            'EMAIL': process.env.EMAIL,
+            'PASSWORD': process.env.PASSWORD,
         })
-
 
     if (type == 1) {
         const parentSuiteName = suite(`Threshold time testing -${Math.random() * 10000}- `)
@@ -50,10 +48,8 @@ const defineTestSuiteAndAddTests = async(suite, Test, suiteInstance, type) => {
         const parentSuiteName = suite(`scalableStrategiesTest -${Math.random() * 10000}- `)
         scalableStrategiesTest(Test, suiteInstance, parentSuiteName);
     }
-
-
-
 }
+
 const timingTestStrategies = (Test, suiteInstance, parentSuite, student_file, feedback_already_reported, DBaccessCost) => {
     const testSuite = suiteInstance.create(parentSuite, `-${Math.random() * 10000} - `);
     testSuite.dispose();
@@ -108,14 +104,9 @@ const scalableStrategiesTest = (Test, suiteInstance, parentSuite) => {
                     });
                 });
             }
-
         }
-
         await fn();
-
     }));
-
-
 }
 
 module.exports = { defineTestSuiteAndAddTests, feedbacks_id_list, reports_id_list }

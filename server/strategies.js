@@ -1,16 +1,10 @@
-/* import fs from 'fs'
-import path from 'path'
-import { db, closeConnection, insert, createIndex, cehckIfExist, remove } from './commons/dbManager.js'
-import feedbackItem from './commons/feedbackItem.js'
-import { ProgrammingExercise } from "programming-exercise-juezlti";
-import fillFile from './commons/fill.js'; */
-
 var fs = require('fs')
 var path = require('path')
 var {db, closeConnection, insert, createIndex, cehckIfExist, remove} = require('./commons/dbManager.js')
 var feedbackItem = require('./commons/feedbackItem.js')
-var ProgrammingExercise = require('programming-exercise-juezlti')
+var {ProgrammingExercise} = require('programming-exercise-juezlti')
 var fillFile = require('./commons/fill.js')
+require('dotenv').config()
 
 const strategies = [];
 const compileErros = ["Output Limit Exceeded",
@@ -29,12 +23,11 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
     if (full_report.request.program != student_file.program) {
 
         try {
-            let allFeedbacks = await Promise.all(strategies.map(s => s.getFeedback(evaluation_report, programmingExercise, student_file)));
+            let allFeedbacks = await Promise.all(strategies.map(s => 
+                s.getFeedback(evaluation_report, programmingExercise, student_file)));
             var feedback = new feedbackItem("hmm...", 100, "error", -1);
             var allFeedbacksSorted = []
             if (allFeedbacks.length > 0) {
-
-
 
                 for (let f of allFeedbacks) {
                     if (Array.isArray(f)) {
@@ -71,48 +64,37 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
             reject(err)
         }
     } else {
-
         resolve(`Your current submission is exactly the previous one. Please try to think carefully before sending your answer.`);
     }
-
-
 }
 
-
-
 function readStrategiesAndStart() {
-    let files = fs.readdirSync(path.join(__dirname, process.env.STRATEGIES_FOLDER));
+    let files = fs.readdirSync(path.join(__dirname, "/strategies"));
     files.forEach(file =>
-        strategies.push(require(path.join(__dirname, process.env.STRATEGIES_FOLDER, file))));
-
+        strategies.push(require(path.join(__dirname, "/strategies", file))));
 }
 
 function applyStrategies(input, student_file, feedback_already_reported, resolve, reject, full_report) {
-
     ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
     then((programmingExercise) => {
         FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
     }).catch((err) => {
-
         ProgrammingExercise
             .loadRemoteExercise(input.exercise, {
-                'BASE_URL': "",
-                'EMAIL': "",
-                'PASSWORD': "",
+                'BASE_URL': process.env.BASE_URL,
+                'EMAIL': process.env.EMAIL,
+                'PASSWORD': process.env.PASSWORD,
             })
             .then(async(programmingExercise) => {
                     FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
                     programmingExercise.serialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`)
                 }
-
             ).catch((err) => {
                 console.log(err)
                 console.log("error at  function applyStrategies when loadRemoteExercise  ");
                 reject(err)
             });
-
     })
-
 }
 
 module.exports = {
@@ -122,32 +104,31 @@ getBestFeedback:function getBestFeedback(input, student_id, full_report) {
         const isWrongBecauseOfACompilationProblem = compileErros.includes(full_report.summary.classify);
         const isCorrect = full_report.summary.classify == "Accepted";
 
-
-
         console.log("isCorrect " + isCorrect)
         console.log("isWrongBecauseOfACompilationProblem " + isWrongBecauseOfACompilationProblem)
 
-        if (!isCorrect && !isWrongBecauseOfACompilationProblem) {
+        if (!isCorrect && !isWrongBecauseOfACompilationProblem){
             console.log("Errado e nao foi erro de compilacao")
-            {
-                if (strategies.length == 0) {
-                    readStrategiesAndStart()
-                }
-                fillFile(student_id, input.exercise, input.tests.length).then(
-                    (data) => {
-                        console.log("DADOS")
-                        console.log(data)
-                        applyStrategies(input, data.student_file, data.feedback_already_reported, resolve, reject, full_report)
 
-                    }).catch((err) => {
-                    console.log(err)
-                    console.log("error in function getBestFeedback")
-                    reject();
-
-                });
+            if (strategies.length == 0) {
+                readStrategiesAndStart()
             }
+
+            fillFile(student_id, input.exercise, input.tests.length).then(
+                (data) => {
+                    //console.log("DADOS")
+                    //console.log(data)
+                    applyStrategies(input, data.student_file, data.feedback_already_reported, resolve, reject, full_report)
+
+                }).catch((err) => {
+                //console.log(err)
+                //console.log("error in function getBestFeedback")
+                reject();
+
+            });
+            
         } else if (isCorrect) {
-            console.log("Correto")
+            //console.log("Correto")
             let feedback_text = "Congratulations!!!! you have submitted the correct answer";
 
             let number_of_correct_tests = [];
@@ -162,7 +143,7 @@ getBestFeedback:function getBestFeedback(input, student_id, full_report) {
             });
             resolve(feedback_text);
         } else if (isWrongBecauseOfACompilationProblem) {
-            console.log("erro de compilacao")
+            //console.log("erro de compilacao")
             let evaluation_report = {
                 "exercise": input.exercise,
                 "compilationErrors": [],

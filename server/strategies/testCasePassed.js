@@ -1,5 +1,4 @@
-import feedbackItem from '../commons/feedbackItem';
-
+var feedbackItem = require('../commons/feedbackItem')
 
 const feedback_name = "testCasePassed";
 const feedback_time = 200;

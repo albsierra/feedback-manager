@@ -1,0 +1,67 @@
+{
+    "request": {
+        "date": "2023-02-08T21:36:50-10:00",
+        "program": "import java.util.Scanner;\r\n\r\npublic class Main {\r\n\r\n    public static void main(String[] args)\r\n    {\r\n        Scanner input = new Scanner (System.in);\r\n        String name = input.next();\r\n        System.out.println(\"Hello \");\r\n        System.out.print(name);\r\n    }\r\n}",
+        "learningObject": "5545785d-7fbd-4804-a9b0-b3152a753ceb",
+        "studentID": "2",
+        "language": "Java"
+    },
+    "reply": {
+        "report": {
+            "capability": {
+                "id": "Java-evaluator",
+                "features": [
+                    {
+                        "name": "language",
+                        "value": "java"
+                    },
+                    {
+                        "name": "version",
+                        "value": "openjdk 11.0.15"
+                    },
+                    {
+                        "name": "engine",
+                        "value": "https://openjdk.java.net/"
+                    }
+                ],
+                "programmingFeatures": {
+                    "compilationProgram": "javac",
+                    "extFile": "java",
+                    "executionProgram": "java",
+                    "executionProgramParameters": [
+                        "-Duser.language=es",
+                        "-Duser.region=ES"
+                    ],
+                    "needsClassName": true
+                }
+            },
+            "programmingLanguage": "Java",
+            "exercise": "5545785d-7fbd-4804-a9b0-b3152a753ceb",
+            "tests": [
+                {
+                    "input": "Juan",
+                    "expectedOutput": "Hello░⁋\nJuan",
+                    "obtainedOutput": "Hello░⁋\nJuan",
+                    "outputDifferences": "[{\"value\":\"Hello\\nJuan\",\"count\":2}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "Charles",
+                    "expectedOutput": "Hello░⁋\nCharles",
+                    "obtainedOutput": "Hello░⁋\nCharles",
+                    "outputDifferences": "[{\"value\":\"Hello\\nCharles\",\"count\":2}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                }
+            ]
+        }
+    },
+    "summary": {
+        "classify": "Accepted"
+    }
+}

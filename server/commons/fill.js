@@ -66,7 +66,6 @@ module.exports = (student_id, exercise_id, number_of_tests) => {
                 student_file.incorrect_test_case_frequency = incorrect_test_case_frequency
                 student_file.correct_test_case_frequency = correct_test_case_frequency
                 student_file.last_feedback_reported = last_feedback_reported
-                console.log(student_file)
                 if (student_file.last_feedback_reported != undefined) {
                     console.log("Last feedback nao undefined")
                     db(() => {

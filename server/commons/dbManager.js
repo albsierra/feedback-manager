@@ -1,7 +1,8 @@
 const { MongoClient } = require('mongodb');
 //import 'regenerator-runtime/runtime.js'
 require('regenerator-runtime/runtime.js')
-const client = new MongoClient("mongodb+srv://luiscodeplayground:xvJ6yLg2pJd8wujt@cluster0.hssftfo.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
+require('dotenv').config()
+const client = new MongoClient(process.env.FEEDBACK_MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 var collection
 
 module.exports = {
