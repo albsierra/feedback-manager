@@ -1,0 +1,138 @@
+{
+    "request": {
+        "date": "2023-02-14T08:22:44-10:00",
+        "program": "import java.util.Scanner;\r\n\r\n\r\npublic class Signos {\r\n\r\n\tstatic String[] signos = { \"rato\", \"boi\", \"tigre\", \"coelho\", \"dragão\", \"serpente\", \"cavalo\", \"carneiro\",\r\n\t\t\t \"macaco\", \"galo\", \"cão\", \"porco\"};\r\n\t\r\n\tstatic int offset = 4; \r\n\t\r\n\tpublic static String signoDoAno(int ano) {\r\n\t\tint signo;\r\n\t\t\r\n\t\tif(ano <-1) ano++;\r\n\t\t\r\n\t\tano -= offset;\r\n\t\t\r\n\t\tsigno = ano % 12;\r\n\t\t\r\n\t\tif(signo < 0)\r\n\t\t\tsigno += 12;\r\n\t\t\r\n\t\treturn signos[signo];\r\n\t}\r\n\t\r\n\tpublic static void main(String args []) {\t\t\r\n\t\t\r\n\t\tScanner stdin = new Scanner(System.in);\r\n\t\t\r\n\t\tint ano = stdin.nextInt();\r\n\t\t\r\n\t\tSystem.out.println(signoDoAno(ano));\r\n\t\t\r\n\t}\r\n\t\r\n}",
+        "learningObject": "70086b35-64c7-4743-804d-0216dce367ab",
+        "studentID": "2",
+        "language": "Java"
+    },
+    "reply": {
+        "report": {
+            "capability": {
+                "id": "Java-evaluator",
+                "features": [
+                    {
+                        "name": "language",
+                        "value": "java"
+                    },
+                    {
+                        "name": "version",
+                        "value": "openjdk 11.0.15"
+                    },
+                    {
+                        "name": "engine",
+                        "value": "https://openjdk.java.net/"
+                    }
+                ],
+                "programmingFeatures": {
+                    "compilationProgram": "javac",
+                    "extFile": "java",
+                    "executionProgram": "java",
+                    "executionProgramParameters": [
+                        "-Duser.language=es",
+                        "-Duser.region=ES"
+                    ],
+                    "needsClassName": true
+                }
+            },
+            "programmingLanguage": "Java",
+            "exercise": "70086b35-64c7-4743-804d-0216dce367ab",
+            "tests": [
+                {
+                    "input": "-1\n",
+                    "expectedOutput": "macaco⁋\n",
+                    "obtainedOutput": "carneiro⁋\n",
+                    "outputDifferences": "[{\"count\":1,\"removed\":true,\"value\":\"macaco\\n\"},{\"count\":1,\"added\":true,\"value\":\"carneiro\\n\"}]",
+                    "classify": "Wrong Answer",
+                    "mark": 0,
+                    "feedback": "Wrong Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "-3904\n",
+                    "expectedOutput": "serpente⁋\n",
+                    "obtainedOutput": "serpente⁋\n",
+                    "outputDifferences": "[{\"value\":\"serpente\\n\",\"count\":1}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "2010\n",
+                    "expectedOutput": "tigre⁋\n",
+                    "obtainedOutput": "tigre⁋\n",
+                    "outputDifferences": "[{\"value\":\"tigre\\n\",\"count\":1}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "2007\n",
+                    "expectedOutput": "porco⁋\n",
+                    "obtainedOutput": "porco⁋\n",
+                    "outputDifferences": "[{\"value\":\"porco\\n\",\"count\":1}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "3930\n",
+                    "expectedOutput": "tigre⁋\n",
+                    "obtainedOutput": "tigre⁋\n",
+                    "outputDifferences": "[{\"value\":\"tigre\\n\",\"count\":1}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "-3855\n",
+                    "expectedOutput": "cavalo⁋\n",
+                    "obtainedOutput": "cavalo⁋\n",
+                    "outputDifferences": "[{\"value\":\"cavalo\\n\",\"count\":1}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "2013\n",
+                    "expectedOutput": "serpente⁋\n",
+                    "obtainedOutput": "serpente⁋\n",
+                    "outputDifferences": "[{\"value\":\"serpente\\n\",\"count\":1}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "-2580\n",
+                    "expectedOutput": "galo⁋\n",
+                    "obtainedOutput": "galo⁋\n",
+                    "outputDifferences": "[{\"value\":\"galo\\n\",\"count\":1}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "-334\n",
+                    "expectedOutput": "porco⁋\n",
+                    "obtainedOutput": "porco⁋\n",
+                    "outputDifferences": "[{\"value\":\"porco\\n\",\"count\":1}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                }
+            ]
+        }
+    },
+    "summary": {
+        "classify": "Wrong Answer",
+        "feedback": "You never have solved this exercise. Keep Calm and code on \n\n"
+    }
+}

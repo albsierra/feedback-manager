@@ -56,9 +56,11 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
                 }
             }
             persist_feedback(evaluation_report, student_file.student_id, feedback.name, feedback.text, feedback_id => {
-                persist_report(feedback_id, full_report);
+                persist_report(feedback_id, full_report, report_id => {
+                    resolve(feedback.text, feedback_id, report_id);
+                });
             });
-            resolve(feedback.text);
+            
         } catch (err) {
             console.log(err)
             reject(err)
@@ -128,9 +130,8 @@ getBestFeedback:function getBestFeedback(input, student_id, full_report) {
             });
             
         } else if (isCorrect) {
-            //console.log("Correto")
+            console.log("Correto")
             let feedback_text = "Congratulations!!!! you have submitted the correct answer";
-
             let number_of_correct_tests = [];
 
             [...Array(input.number_of_tests)].forEach((el, index) => {
@@ -139,11 +140,13 @@ getBestFeedback:function getBestFeedback(input, student_id, full_report) {
 
 
             persist_feedback(input, student_id, "Congratulations", feedback_text, feedback_id => {
-                persist_report(feedback_id, full_report);
+                persist_report(feedback_id, full_report, report_id => {
+                    resolve([feedback_text, feedback_id, report_id]);
+                });
             });
-            resolve(feedback_text);
+            
         } else if (isWrongBecauseOfACompilationProblem) {
-            //console.log("erro de compilacao")
+            console.log("erro de compilacao")
             let evaluation_report = {
                 "exercise": input.exercise,
                 "compilationErrors": [],
@@ -152,9 +155,10 @@ getBestFeedback:function getBestFeedback(input, student_id, full_report) {
             }
 
             persist_feedback(evaluation_report, student_id, full_report.summary.classify, full_report.summary.feedback, feedback_id => {
-                persist_report(feedback_id, full_report);
+                persist_report(feedback_id, full_report, report_id => {
+                    resolve(full_report.summary.feedback, feedback_id, report_id);
+                });
             });
-            resolve(full_report.summary.feedback);
         }
     })
 },

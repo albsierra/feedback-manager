@@ -94,7 +94,7 @@ router.post("/", async function(req, res) {
                 if (("summary" in input) == false) {
                     input.summary = {}
                 }
-                input.summary.feedback = feedback
+                input.summary.feedback = feedback[0]
                 res.json(input);
             }).catch((error) => {
                 console.log(error)
