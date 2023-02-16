@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-var {db, closeConnection, insert, createIndex, cehckIfExist, remove} = require('./commons/dbManager.js')
+var {db, closeConnection, insert, createIndex, checkIfExist, remove} = require('./commons/dbManager.js')
 var feedbackItem = require('./commons/feedbackItem.js')
 var {ProgrammingExercise} = require('programming-exercise-juezlti')
 var fillFile = require('./commons/fill.js')
@@ -146,7 +146,7 @@ getBestFeedback:function getBestFeedback(input, student_id, full_report) {
             });
             
         } else if (isWrongBecauseOfACompilationProblem) {
-            console.log("erro de compilacao")
+            console.log("Erro de compilacao")
             let evaluation_report = {
                 "exercise": input.exercise,
                 "compilationErrors": [],
@@ -164,45 +164,14 @@ getBestFeedback:function getBestFeedback(input, student_id, full_report) {
 },
 
 remove_feedback:function remove_feedback(obj, callback) {
-    let rmv = () => {
-        remove(obj).then(() => {
-            // console.log(result)
-            closeConnection();
-            if (callback != undefined) {
-                callback();
-            }
-        });
-    }
-
     db(() => {
-        cehckIfExist("feedbacks").then(
-            () => {
-                rmv();
-            }
-        ).catch((err) => {
-            console.log(err);
-        })
+        remove(obj)
     }, "feedbacks");
 },
 
 remove_report:function remove_report(obj, callback) {
-    let rmv = () => {
-        remove(obj).then(() => {
-            // console.log(result)
-            closeConnection();
-            if (callback != undefined) {
-                callback();
-            }
-        });
-    }
     db(() => {
-        cehckIfExist("reports").then(
-            () => {
-                rmv();
-            }
-        ).catch((err) => {
-            console.log(err);
-        })
+        remove(obj)
     }, "reports");
 }
 }
@@ -223,7 +192,7 @@ function persist_report(feedback_id, full_report, callback) {
         });
     }
     db(() => {
-        cehckIfExist("reports").then(
+        checkIfExist("reports").then(
             (flag) => {
                 //console.log(flag);
                 if (!flag) {
@@ -267,7 +236,7 @@ function persist_feedback(evaluation_report, student_id, feedback_name, feedback
     }
 
     db(() => {
-        cehckIfExist("feedbacks").then(
+        checkIfExist("feedbacks").then(
             (flag) => {
                 // console.log(flag);
                 if (!flag) {

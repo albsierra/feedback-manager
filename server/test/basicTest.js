@@ -14,11 +14,11 @@ describe('BasicTest', () => {
             await loadSchemaYAPEXIL();
             let feedback = await getBestFeedback(PEAR_tests_all_ok.reply.report, PEAR_tests_all_ok.request.studentID, PEAR_tests_all_ok)
             PEAR_tests_all_ok.summary.feedback = feedback[0]
-            await remove_feedback({_id: feedback[1]})
-            await remove_report({_id: feedback[2]})
+            remove_feedback({_id: feedback[1]})
+            remove_report({_id: feedback[2]})            
         })
 
-        it("All tests right feedback", async () => {
+        it("All tests right feedback", () => {
                 let expectedFeedback = "Congratulations!!!! you have submitted the correct answer"
                 assert.equal(PEAR_tests_all_ok.summary.feedback, expectedFeedback)
         }).timeout(5000)

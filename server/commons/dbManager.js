@@ -21,7 +21,7 @@ createIndex:async function createIndex(index) {
     // console.log(`Index created: ${result}`);
 },
 
-cehckIfExist:function cehckIfExist(collection_name) {
+checkIfExist:function checkIfExist(collection_name) {
     return new Promise((resolve, reject) => {
         let flag = false;
         client.db("JUEZLTI").collections(function(e, cols) {
@@ -42,14 +42,14 @@ cehckIfExist:function cehckIfExist(collection_name) {
 
 },
 
-
 remove:function remove(obj) {
     return new Promise((resolve, reject) => {
-        collection.deleteOne(obj, function(err, result) {
+        collection.deleteOne({_id: obj._id}, function(err, result) {
             if (err) {
                 console.log(err);
                 reject(err)
             } else {
+                console.log(result)
                 resolve()
             }
 
