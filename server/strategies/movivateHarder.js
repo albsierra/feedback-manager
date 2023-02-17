@@ -7,9 +7,8 @@ const HINTS = [
 ];
 const feedback_name = "motivateHarder";
 const feedback_time = 200;
+
 module.exports = {
-
-
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
     "getFeedback": async(report, exercise, student_file) => {

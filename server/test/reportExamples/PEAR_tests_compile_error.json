@@ -2,7 +2,7 @@
     "request": {
         "date": "2023-02-14T08:30:02-10:00",
         "program": "import java.util.Scanner;\r\n\r\n\r\npublic class Signos {\r\n\r\n\tstatic String[] signos = { \"rato\", \"boi\", \"tigre\", \"coelho\", \"dragão\", \"serpente\", \"cavalo\", \"carneiro\",\r\n\t\t\t \"macaco\", \"galo\", \"cão\", \"porco\"};\r\n\t\r\n\tstatic int offset = 4; \r\n\t\r\n\tpublic static String signoDoAno(int ano) {\r\n\t\tint signo;\r\n\t\t\r\n\t\tif(ano <0) ano++\r\n\t\t\r\n\t\tano -= offset;\r\n\t\t\r\n\t\tsigno = ano % 2;\r\n\t\t\r\n\t\tif(signo < 0)\r\n\t\t\tsigno += 120;\r\n\t\t\r\n\t\treturn signos[signo];\r\n    }\r\n\t\r\n\tpublic static void main(String args []) {\t\t\r\n\t\t\r\n\t\tScanner stdin = new Scanner(System.in);\r\n\t\t\r\n\t\tint ano = stdin.nextInt();\r\n\t\t\r\n\t\tSystem.out.println(signoDoAno(ano));\r\n\t\t\r\n\t}\r\n\t\r\n}",
-        "learningObject": "70086b35-64c7-4743-804d-0216dce367ab",
+        "learningObject": "test-exercise",
         "studentID": "2",
         "language": "Java"
     },
@@ -36,7 +36,7 @@
                 }
             },
             "programmingLanguage": "Java",
-            "exercise": "70086b35-64c7-4743-804d-0216dce367ab",
+            "exercise": "test-exercise",
             "tests": []
         }
     },

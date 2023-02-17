@@ -2,6 +2,7 @@ var feedbackItem = require('../commons/feedbackItem')
 
 const feedback_name = "testCasePassed";
 const feedback_time = 200;
+
 module.exports = {
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
@@ -25,8 +26,5 @@ module.exports = {
 
         }
         return (new feedbackItem(feedback, 1, "INF", -1, feedback_name))
-
     }
-
-
 }

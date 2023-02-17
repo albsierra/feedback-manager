@@ -7,9 +7,8 @@ const HINTS = [
 ];
 const feedback_name = "percentage";
 const feedback_time = 200;
+
 module.exports = {
-
-
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
     getFeedback: async(report, exercise, student_file) => {
@@ -23,8 +22,6 @@ module.exports = {
             return item;
         } else {
             return new feedbackItem(``, 0, "INF", 2, feedback_name);
-
         }
-
     }
 };

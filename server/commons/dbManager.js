@@ -49,7 +49,6 @@ remove:function remove(obj) {
                 console.log(err);
                 reject(err)
             } else {
-                console.log(result)
                 resolve()
             }
 

@@ -57,7 +57,7 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
             }
             persist_feedback(evaluation_report, student_file.student_id, feedback.name, feedback.text, feedback_id => {
                 persist_report(feedback_id, full_report, report_id => {
-                    resolve(feedback.text, feedback_id, report_id);
+                    resolve([feedback.text, feedback_id, report_id]);
                 });
             });
             
@@ -66,16 +66,18 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
             reject(err)
         }
     } else {
-        resolve(`Your current submission is exactly the previous one. Please try to think carefully before sending your answer.`);
+        resolve([`Your current submission is exactly the previous one. Please try to think carefully before sending your answer.`]);
     }
 }
 
+// Read strategies from folder /strategeis
 function readStrategiesAndStart() {
     let files = fs.readdirSync(path.join(__dirname, "/strategies"));
     files.forEach(file =>
         strategies.push(require(path.join(__dirname, "/strategies", file))));
 }
 
+// Called when wrong answer and not compilation error
 function applyStrategies(input, student_file, feedback_already_reported, resolve, reject, full_report) {
     ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
     then((programmingExercise) => {
@@ -93,87 +95,77 @@ function applyStrategies(input, student_file, feedback_already_reported, resolve
                 }
             ).catch((err) => {
                 console.log(err)
-                console.log("error at  function applyStrategies when loadRemoteExercise  ");
+                console.log("error at  function applyStrategies when loadRemoteExercise");
                 reject(err)
             });
     })
 }
 
 module.exports = {
-getBestFeedback:function getBestFeedback(input, student_id, full_report) {
-    return new Promise((resolve, reject) => {
-        console.log("input.classify " + full_report.summary.classify)
-        const isWrongBecauseOfACompilationProblem = compileErros.includes(full_report.summary.classify);
-        const isCorrect = full_report.summary.classify == "Accepted";
+    // Read classify and check if is compilation error.
+    getBestFeedback:function getBestFeedback(input, student_id, full_report) {
+        return new Promise((resolve, reject) => {
+            const isWrongBecauseOfACompilationProblem = compileErros.includes(full_report.summary.classify);
+            const isCorrect = full_report.summary.classify == "Accepted";
 
-        console.log("isCorrect " + isCorrect)
-        console.log("isWrongBecauseOfACompilationProblem " + isWrongBecauseOfACompilationProblem)
+            if (!isCorrect && !isWrongBecauseOfACompilationProblem){
 
-        if (!isCorrect && !isWrongBecauseOfACompilationProblem){
-            console.log("Errado e nao foi erro de compilacao")
+                if (strategies.length == 0) {
+                    readStrategiesAndStart()
+                }
 
-            if (strategies.length == 0) {
-                readStrategiesAndStart()
-            }
+                fillFile(student_id, input.exercise, input.tests.length).then(
+                    (data) => {
+                        applyStrategies(input, data.student_file, data.feedback_already_reported, resolve, reject, full_report)
 
-            fillFile(student_id, input.exercise, input.tests.length).then(
-                (data) => {
-                    //console.log("DADOS")
-                    //console.log(data)
-                    applyStrategies(input, data.student_file, data.feedback_already_reported, resolve, reject, full_report)
+                    }).catch((err) => {
+                    reject();
 
-                }).catch((err) => {
-                //console.log(err)
-                //console.log("error in function getBestFeedback")
-                reject();
-
-            });
-            
-        } else if (isCorrect) {
-            console.log("Correto")
-            let feedback_text = "Congratulations!!!! you have submitted the correct answer";
-            let number_of_correct_tests = [];
-
-            [...Array(input.number_of_tests)].forEach((el, index) => {
-                number_of_correct_tests.push(`${index}`);
-            });
-
-
-            persist_feedback(input, student_id, "Congratulations", feedback_text, feedback_id => {
-                persist_report(feedback_id, full_report, report_id => {
-                    resolve([feedback_text, feedback_id, report_id]);
                 });
-            });
-            
-        } else if (isWrongBecauseOfACompilationProblem) {
-            console.log("Erro de compilacao")
-            let evaluation_report = {
-                "exercise": input.exercise,
-                "compilationErrors": [],
-                "number_of_tests": input.number_of_tests,
-                "tests": []
-            }
+                
+            } else if (isCorrect) {
+                let feedback_text = "Congratulations!!!! you have submitted the correct answer";
+                let number_of_correct_tests = [];
 
-            persist_feedback(evaluation_report, student_id, full_report.summary.classify, full_report.summary.feedback, feedback_id => {
-                persist_report(feedback_id, full_report, report_id => {
-                    resolve(full_report.summary.feedback, feedback_id, report_id);
+                [...Array(input.number_of_tests)].forEach((el, index) => {
+                    number_of_correct_tests.push(`${index}`);
                 });
-            });
-        }
-    })
-},
 
-remove_feedback:function remove_feedback(obj, callback) {
-    db(() => {
-        remove(obj)
-    }, "feedbacks");
-},
 
-remove_report:function remove_report(obj, callback) {
-    db(() => {
-        remove(obj)
-    }, "reports");
-}
+                persist_feedback(input, student_id, "Congratulations", feedback_text, feedback_id => {
+                    persist_report(feedback_id, full_report, report_id => {
+                        resolve([feedback_text, feedback_id, report_id]);
+                    });
+                });
+                
+            } else if (isWrongBecauseOfACompilationProblem) {
+                let evaluation_report = {
+                    "exercise": input.exercise,
+                    "compilationErrors": [],
+                    "number_of_tests": input.number_of_tests,
+                    "tests": []
+                }
+
+                persist_feedback(evaluation_report, student_id, full_report.summary.classify, full_report.summary.feedback, feedback_id => {
+                    persist_report(feedback_id, full_report, report_id => {
+                        resolve([full_report.summary.feedback, feedback_id, report_id]);
+                    });
+                });
+            }
+        })
+    },
+
+    remove_feedback:function remove_feedback(obj, callback) {
+        db(() => {
+            remove(obj)
+        }, "feedbacks");
+    },
+
+    remove_report:function remove_report(obj, callback) {
+        db(() => {
+            remove(obj)
+        }, "reports");
+    }
 }
 
 function persist_report(feedback_id, full_report, callback) {
@@ -183,8 +175,7 @@ function persist_report(feedback_id, full_report, callback) {
             "full_report": full_report,
             "reported_time": Date.now()
         }).then((inserted_id) => {
-            // console.log(inserted_id)
-            closeConnection();
+            //closeConnection();
             if (callback != undefined) {
                 callback(inserted_id);
             }
@@ -194,7 +185,6 @@ function persist_report(feedback_id, full_report, callback) {
     db(() => {
         checkIfExist("reports").then(
             (flag) => {
-                //console.log(flag);
                 if (!flag) {
                     createIndex({
                         feedback_id: 1
@@ -226,8 +216,7 @@ function persist_feedback(evaluation_report, student_id, feedback_name, feedback
             }
 
         ).then((inserted_id) => {
-            //console.log(inserted_id)
-            closeConnection();
+            //closeConnection();
             if (callback != undefined) {
                 callback(inserted_id);
             }
@@ -238,7 +227,6 @@ function persist_feedback(evaluation_report, student_id, feedback_name, feedback
     db(() => {
         checkIfExist("feedbacks").then(
             (flag) => {
-                // console.log(flag);
                 if (!flag) {
                     createIndex({
                         student_id: 1,

@@ -2,8 +2,8 @@ var feedbackItem = require('../commons/feedbackItem')
 
 const feedback_name = "outputTestCase";
 const feedback_time = 200;
-module.exports = {
 
+module.exports = {
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
     getFeedback: async(report, exercise, student_file) => {
@@ -22,12 +22,5 @@ module.exports = {
             console.log(err);
             return err
         }
-
-
-
-
-
     }
-
-
 }

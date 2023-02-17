@@ -67,7 +67,6 @@ module.exports = (student_id, exercise_id, number_of_tests) => {
                 student_file.correct_test_case_frequency = correct_test_case_frequency
                 student_file.last_feedback_reported = last_feedback_reported
                 if (student_file.last_feedback_reported != undefined) {
-                    console.log("Last feedback nao undefined")
                     db(() => {
                         findWithCriteria({
                             "feedback_id": last_feedback_reported._id,
@@ -78,8 +77,6 @@ module.exports = (student_id, exercise_id, number_of_tests) => {
 
                     }, "reports")
                 } else {
-                    console.log("Last feedback undefined")
-                    console.log(last_feedback_reported)
                     resolve({ "feedback_already_reported": feedback_already_reported, "student_file": student_file });
                 }
 
