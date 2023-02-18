@@ -208,8 +208,8 @@ function persist_feedback(evaluation_report, student_id, feedback_name, feedback
         insert({
                 "student_id": student_id,
                 "exercise_id": evaluation_report.exercise,
-                "correct_tests": (evaluation_report.tests.map((value, index) => { if (value == "Accepted") return index })).filter((value) => { return value != undefined ? true : false }),
-                "incorrect_tests": (evaluation_report.tests.map((value, index) => { if (value != "Accepted") return index })).filter((value) => { return value != undefined ? true : false }),
+                "correct_tests": (evaluation_report.tests.map((value, index) => { if (value.classify == "Accepted") return index })).filter((value) => { return value != undefined ? true : false }),
+                "incorrect_tests": (evaluation_report.tests.map((value, index) => { if (value.classify != "Accepted") return index })).filter((value) => { return value != undefined ? true : false }),
                 "feedback_text": feedback_text,
                 "feedback_name": feedback_name,
                 "reported_time": Date.now()

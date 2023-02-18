@@ -45,7 +45,7 @@ describe("Wrong Tests", () => {
         .then((feedback) => {
             remove_feedback({_id: feedback[1]})
             remove_report({_id: feedback[2]})
-            let expectedFeedback = "You never have solved this exercise. Keep Calm and code on \n\n"
+            let expectedFeedback = "You have never solved this exercise. Keep Calm and code on \n\n"
             assert.equal(feedback[0], expectedFeedback)
         })
     })
