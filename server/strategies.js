@@ -7,7 +7,7 @@ var fillFile = require('./commons/fill.js')
 require('dotenv').config()
 
 const strategies = [];
-const compileErros = ["Output Limit Exceeded",
+const compileErrors = ["Output Limit Exceeded",
     "Memory Limit Exceeded",
     "Time Limit Exceeded",
     "Invalid Function",
@@ -18,6 +18,8 @@ const compileErros = ["Output Limit Exceeded",
     "Presentation Error"
 ]
 
+
+//Algorithm to select best feedback to send
 const FCG = async(programmingExercise, evaluation_report, student_file, feedback_already_reported, resolve, full_report, reject) => {
 
     if (full_report.request.program != student_file.program) {
@@ -105,11 +107,10 @@ module.exports = {
     // Read classify and check if is compilation error.
     getBestFeedback:function getBestFeedback(input, student_id, full_report) {
         return new Promise((resolve, reject) => {
-            const isWrongBecauseOfACompilationProblem = compileErros.includes(full_report.summary.classify);
+            const isWrongBecauseOfACompilationProblem = compileErrors.includes(full_report.summary.classify);
             const isCorrect = full_report.summary.classify == "Accepted";
 
             if (!isCorrect && !isWrongBecauseOfACompilationProblem){
-
                 if (strategies.length == 0) {
                     readStrategiesAndStart()
                 }
@@ -117,12 +118,10 @@ module.exports = {
                 fillFile(student_id, input.exercise, input.tests.length).then(
                     (data) => {
                         applyStrategies(input, data.student_file, data.feedback_already_reported, resolve, reject, full_report)
-
                     }).catch((err) => {
                     reject();
 
                 });
-                
             } else if (isCorrect) {
                 let feedback_text = "Congratulations!!!! you have submitted the correct answer";
                 let number_of_correct_tests = [];
@@ -131,9 +130,9 @@ module.exports = {
                     number_of_correct_tests.push(`${index}`);
                 });
 
-
                 persist_feedback(input, student_id, "Congratulations", feedback_text, feedback_id => {
                     persist_report(feedback_id, full_report, report_id => {
+                        //Resolve as array because resolve can only contain one value
                         resolve([feedback_text, feedback_id, report_id]);
                     });
                 });
@@ -148,6 +147,7 @@ module.exports = {
 
                 persist_feedback(evaluation_report, student_id, full_report.summary.classify, full_report.summary.feedback, feedback_id => {
                     persist_report(feedback_id, full_report, report_id => {
+                        //Resolve as array because resolve can only contain one value
                         resolve([full_report.summary.feedback, feedback_id, report_id]);
                     });
                 });
@@ -155,6 +155,7 @@ module.exports = {
         })
     },
 
+    //Delete feedback documents from DB
     remove_feedback:function remove_feedback(obj, closeConn, callback) {
         db(async () => {
             await remove(obj)
@@ -163,6 +164,7 @@ module.exports = {
         }, "feedbacks");
     },
 
+    //Delete report documents from DB
     remove_report:function remove_report(obj, closeConn, callback) {
         db(async () => {
             await remove(obj)
@@ -174,6 +176,7 @@ module.exports = {
     }
 }
 
+//Store reports in DB
 function persist_report(feedback_id, full_report, callback) {
     let ins = () => {
         insert({
@@ -209,6 +212,7 @@ function persist_report(feedback_id, full_report, callback) {
     }, "reports");
 }
 
+//Store feedback in DB
 function persist_feedback(evaluation_report, student_id, feedback_name, feedback_text, callback) {
     let ins = () => {
         insert({
