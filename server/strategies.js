@@ -155,15 +155,21 @@ module.exports = {
         })
     },
 
-    remove_feedback:function remove_feedback(obj, callback) {
-        db(() => {
-            remove(obj)
+    remove_feedback:function remove_feedback(obj, closeConn, callback) {
+        db(async () => {
+            await remove(obj)
+            if(closeConn)
+                closeConnection()
         }, "feedbacks");
     },
 
-    remove_report:function remove_report(obj, callback) {
-        db(() => {
-            remove(obj)
+    remove_report:function remove_report(obj, closeConn, callback) {
+        db(async () => {
+            await remove(obj)
+            if(closeConn){
+                closeConnection()
+            }
+                
         }, "reports");
     }
 }
@@ -174,7 +180,7 @@ function persist_report(feedback_id, full_report, callback) {
             "feedback_id": feedback_id,
             "full_report": full_report,
             "reported_time": Date.now()
-        }).then((inserted_id) => {
+        }).then(function(inserted_id){
             //closeConnection();
             if (callback != undefined) {
                 callback(inserted_id);
@@ -215,7 +221,7 @@ function persist_feedback(evaluation_report, student_id, feedback_name, feedback
                 "reported_time": Date.now()
             }
 
-        ).then((inserted_id) => {
+        ).then(function(inserted_id){
             //closeConnection();
             if (callback != undefined) {
                 callback(inserted_id);
