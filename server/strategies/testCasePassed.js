@@ -18,12 +18,10 @@ module.exports = {
         if (current_number_of_correct_tests_case == 0) {
             feedback = `Your submission did not pass any test case. `
 
-        } else if (current_number_of_correct_tests_case < 1) {
+        } else if (current_number_of_correct_tests_case == 1) {
             feedback = `Your submission passed ${current_number_of_correct_tests_case} test case. Keep trying until you got all. `
-
         } else {
             feedback = `Your submission passed ${current_number_of_correct_tests_case} test cases. Keep trying until you got all. `
-
         }
         return (new feedbackItem(feedback, 1, "INF", -1, feedback_name))
     }

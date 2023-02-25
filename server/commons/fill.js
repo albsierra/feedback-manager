@@ -29,11 +29,11 @@ module.exports = (student_id, exercise_id, number_of_tests) => {
 
                     if (last_feedback_reported == undefined)
                         last_feedback_reported = element
-                    else
-                    if (new Date(element.reported_time) > new Date(last_feedback_reported.reported_time))
-                        last_feedback_reported = element
-
-
+                    else{
+                        if (new Date(element.reported_time) > new Date(last_feedback_reported.reported_time))
+                            last_feedback_reported = element
+                    }
+                
                     if (feedback_already_reported[element.feedback_name] == undefined)
                         feedback_already_reported[element.feedback_name] = []
 
