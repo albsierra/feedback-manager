@@ -36,7 +36,8 @@
                 }
             },
             "programmingLanguage": "Java",
-            "exercise": "test-exercise",
+            "exercise": "test-exercise-all-wrong",
+            "hint": "test hint",
             "tests": [
                 {
                     "input": "-1\n",

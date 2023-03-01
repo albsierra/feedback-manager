@@ -59,6 +59,21 @@ module.exports = {
         })
     },
 
+    //Delete Many from DB
+    removeMany:function removeMany(obj) {
+        return new Promise((resolve, reject) => {
+            collection.remove({_id: {$in: obj}}, function(err, result) {
+                if (err) {
+                    console.log(err);
+                    reject(err)
+                } else {
+                    resolve()
+                }
+
+            });
+        })
+    },
+
     //Insert to DB
     insert:function insert(obj) {
         return new Promise((resolve, reject) => {

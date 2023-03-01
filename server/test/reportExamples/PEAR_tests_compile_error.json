@@ -36,7 +36,7 @@
                 }
             },
             "programmingLanguage": "Java",
-            "exercise": "test-exercise",
+            "exercise": "test-exercise-compile-error",
             "tests": []
         }
     },

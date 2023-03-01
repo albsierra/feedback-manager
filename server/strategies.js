@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-var {db, closeConnection, insert, createIndex, checkIfExist, remove} = require('./commons/dbManager.js')
+var {db, closeConnection, insert, createIndex, checkIfExist, remove, removeMany} = require('./commons/dbManager.js')
 var feedbackItem = require('./commons/feedbackItem.js')
 var {ProgrammingExercise} = require('programming-exercise-juezlti')
 var fillFile = require('./commons/fill.js')
@@ -23,14 +23,12 @@ const compileErrors = ["Output Limit Exceeded",
 const FCG = async(programmingExercise, evaluation_report, student_file, feedback_already_reported, resolve, full_report, reject) => {
 
     if (full_report.request.program != student_file.program) {
-
         try {
             let allFeedbacks = await Promise.all(strategies.map(s => 
                 s.getFeedback(evaluation_report, programmingExercise, student_file)));
             var feedback = new feedbackItem("hmm...", 100, "error", -1);
             var allFeedbacksSorted = []
             if (allFeedbacks.length > 0) {
-
                 for (let f of allFeedbacks) {
                     if (Array.isArray(f)) {
                         allFeedbacks.push(...f);
@@ -81,10 +79,13 @@ function readStrategiesAndStart() {
 
 // Called when wrong answer and not compilation error
 function applyStrategies(input, student_file, feedback_already_reported, resolve, reject, full_report) {
-    ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
-    then((programmingExercise) => {
-        FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
-    }).catch((err) => {
+    if(input.hint){
+        FCG(null, input, student_file, feedback_already_reported, resolve, full_report, reject)
+    }else{
+        ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
+        then((programmingExercise) => {
+            FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
+        }).catch((err) => {
         ProgrammingExercise
             .loadRemoteExercise(input.exercise, {
                 'BASE_URL': process.env.BASE_URL,
@@ -100,7 +101,8 @@ function applyStrategies(input, student_file, feedback_already_reported, resolve
                 console.log("error at  function applyStrategies when loadRemoteExercise");
                 reject(err)
             });
-    })
+        })
+    }
 }
 
 module.exports = {
@@ -173,7 +175,18 @@ module.exports = {
             }
                 
         }, "reports");
-    }
+    },
+
+    //Delete test documents from DB
+    remove_tests:function remove_tests(feedbackObj, reportObj, callback) {
+        db(async () => {
+            await removeMany(feedbackObj)
+        }, "feedbacks");
+        db(async () => {
+            await removeMany(reportObj)
+            closeConnection()
+        }, "reports");
+    },
 }
 
 //Store reports in DB
