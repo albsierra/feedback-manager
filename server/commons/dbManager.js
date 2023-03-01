@@ -38,10 +38,7 @@ module.exports = {
                 });
                 resolve(flag);
             });
-
-
         })
-
     },
 
     //Delete from DB
@@ -87,8 +84,6 @@ module.exports = {
 
             });
         })
-
-
     },
 
     //Find documents in BD
