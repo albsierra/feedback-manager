@@ -1,4 +1,4 @@
-import feedbackItem from '../commons/feedbackItem';
+var feedbackItem = require('../commons/feedbackItem')
 
 const feedback_name = "gotBetter";
 const feedback_time = 1;
@@ -12,7 +12,7 @@ module.exports = {
             let current_number_of_correct_tests_case = 0
             let old_number_of_correct_tests_case = student_file.last_feedback_reported.correct_tests.length
             report.tests.forEach(element => {
-                if (element.mark) {
+                if (element.classify == "Accepted") {
                     current_number_of_correct_tests_case++;
                 }
             });

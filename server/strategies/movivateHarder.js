@@ -1,4 +1,5 @@
-import feedbackItem from '../commons/feedbackItem';
+var feedbackItem = require('../commons/feedbackItem')
+
 const HINTS = [
     "work harder !!",
     "never give up on your dreams !!",
@@ -6,9 +7,8 @@ const HINTS = [
 ];
 const feedback_name = "motivateHarder";
 const feedback_time = 200;
+
 module.exports = {
-
-
     "feedback_name": feedback_name,
     "feedback_time": feedback_time,
     "getFeedback": async(report, exercise, student_file) => {

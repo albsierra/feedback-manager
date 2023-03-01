@@ -21,15 +21,15 @@ function main() {
         let body = {
             "studentID": student_id[Math.floor(Math.random() * 100)],
             "date": d.toISOString(),
-            "program": "/bsookstore/book/price//text()",
-            "learningObject": "fd286cb3-5c95-4b0e-b843-56bc058a7713"
+            "program": "import java.util.Scanner;\r\n\r\npublic class Main {\r\n\r\n    public static void main(String[] args)\r\n    {\r\n        Scanner input = new Scanner (System.in);\r\n        String name = input.next();\r\n        System.out.println(\"Hello \");\r\n        System.out.print(name);\r\n    }\r\n}",
+            "learningObject": "fd286cb3-5c95-4b0e-b843-56bc058a7713",
+            "language": "Java"
         }
 
 
         //   setTimeout(function() {
-        console.log(body)
         axios
-            .post('http://localhost:8080/eval', body)
+            .post('http://localhost:3000/eval', body)
             .then(res => {
                 console.log(`statusCode: ${res.status}`)
                 console.log(res.data)
@@ -48,7 +48,7 @@ function main() {
 
 
 
-    }, 10);
+    }, 5000);
 }
 
 

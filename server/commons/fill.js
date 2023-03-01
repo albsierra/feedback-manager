@@ -1,9 +1,8 @@
-import { db, findWithCriteria } from './dbManager';
+//import { db, findWithCriteria } from './dbManager.js';
+var {db, findWithCriteria} = require('./dbManager.js');
 
 
-export default (student_id, exercise_id, number_of_tests) => {
-
-
+module.exports = (student_id, exercise_id, number_of_tests) => {
     return new Promise((resolve, reject) => {
         db(() => {
             findWithCriteria({
@@ -30,11 +29,11 @@ export default (student_id, exercise_id, number_of_tests) => {
 
                     if (last_feedback_reported == undefined)
                         last_feedback_reported = element
-                    else
-                    if (new Date(element.reported_time) > new Date(last_feedback_reported.reported_time))
-                        last_feedback_reported = element
-
-
+                    else{
+                        if (new Date(element.reported_time) > new Date(last_feedback_reported.reported_time))
+                            last_feedback_reported = element
+                    }
+                
                     if (feedback_already_reported[element.feedback_name] == undefined)
                         feedback_already_reported[element.feedback_name] = []
 
@@ -67,7 +66,7 @@ export default (student_id, exercise_id, number_of_tests) => {
                 student_file.incorrect_test_case_frequency = incorrect_test_case_frequency
                 student_file.correct_test_case_frequency = correct_test_case_frequency
                 student_file.last_feedback_reported = last_feedback_reported
-                if (last_feedback_reported != undefined) {
+                if (student_file.last_feedback_reported != undefined) {
                     db(() => {
                         findWithCriteria({
                             "feedback_id": last_feedback_reported._id,
@@ -76,20 +75,13 @@ export default (student_id, exercise_id, number_of_tests) => {
                             resolve({ "feedback_already_reported": feedback_already_reported, "student_file": student_file });
                         })
 
-                    }, "reports").catch((error) => {
-                        console.log("error {}")
-                        reject(error)
-                    });
+                    }, "reports")
                 } else {
                     resolve({ "feedback_already_reported": feedback_already_reported, "student_file": student_file });
-
                 }
 
             });
-        }, "feedbacks").catch((error) => {
-            console.log("error {}")
-            reject(error)
-        });
+        }, "feedbacks");
 
 
     })

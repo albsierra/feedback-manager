@@ -1,0 +1,207 @@
+// PEAR object: both tests right
+{
+    "request": {
+        "date": "2023-02-08T21:36:50-10:00",
+        "program": "import java.util.Scanner;\r\n\r\npublic class Main {\r\n\r\n    public static void main(String[] args)\r\n    {\r\n        Scanner input = new Scanner (System.in);\r\n        String name = input.next();\r\n        System.out.println(\"Hello \");\r\n        System.out.print(name);\r\n    }\r\n}",
+        "learningObject": "5545785d-7fbd-4804-a9b0-b3152a753ceb",
+        "studentID": "2",
+        "language": "Java"
+    },
+    "reply": {
+        "report": {
+            "capability": {
+                "id": "Java-evaluator",
+                "features": [
+                    {
+                        "name": "language",
+                        "value": "java"
+                    },
+                    {
+                        "name": "version",
+                        "value": "openjdk 11.0.15"
+                    },
+                    {
+                        "name": "engine",
+                        "value": "https://openjdk.java.net/"
+                    }
+                ],
+                "programmingFeatures": {
+                    "compilationProgram": "javac",
+                    "extFile": "java",
+                    "executionProgram": "java",
+                    "executionProgramParameters": [
+                        "-Duser.language=es",
+                        "-Duser.region=ES"
+                    ],
+                    "needsClassName": true
+                }
+            },
+            "programmingLanguage": "Java",
+            "exercise": "5545785d-7fbd-4804-a9b0-b3152a753ceb",
+            "tests": [
+                {
+                    "input": "Juan",
+                    "expectedOutput": "Hello░⁋\nJuan",
+                    "obtainedOutput": "Hello░⁋\nJuan",
+                    "outputDifferences": "[{\"value\":\"Hello\\nJuan\",\"count\":2}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "Charles",
+                    "expectedOutput": "Hello░⁋\nCharles",
+                    "obtainedOutput": "Hello░⁋\nCharles",
+                    "outputDifferences": "[{\"value\":\"Hello\\nCharles\",\"count\":2}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                }
+            ]
+        }
+    },
+    "summary": {
+        "classify": "Accepted",
+        "feedback": "Congratulations!!!! you have submitted the correct answer"
+    }
+}
+// PEAR object: one out two test wrong
+{
+    "request": {
+        "date": "2023-02-08T21:28:51-10:00",
+        "program": "import java.util.Scanner;\r\n\r\npublic class Main {\r\n\r\n    public static void main(String[] args)\r\n    {\r\n        Scanner input = new Scanner (System.in);\r\n        String name = input.next();\r\n        if(name.equals(\"Charles\")) {\r\n          name = \"Carlos\";\r\n        }\r\n        System.out.println(\"Hello \");\r\n        System.out.print(name);\r\n    }\r\n}",
+        "learningObject": "5545785d-7fbd-4804-a9b0-b3152a753ceb",
+        "studentID": "2",
+        "language": "Java"
+    },
+    "reply": {
+        "report": {
+            "capability": {
+                "id": "Java-evaluator",
+                "features": [
+                    {
+                        "name": "language",
+                        "value": "java"
+                    },
+                    {
+                        "name": "version",
+                        "value": "openjdk 11.0.15"
+                    },
+                    {
+                        "name": "engine",
+                        "value": "https://openjdk.java.net/"
+                    }
+                ],
+                "programmingFeatures": {
+                    "compilationProgram": "javac",
+                    "extFile": "java",
+                    "executionProgram": "java",
+                    "executionProgramParameters": [
+                        "-Duser.language=es",
+                        "-Duser.region=ES"
+                    ],
+                    "needsClassName": true
+                }
+            },
+            "programmingLanguage": "Java",
+            "exercise": "5545785d-7fbd-4804-a9b0-b3152a753ceb",
+            "tests": [
+                {
+                    "input": "Juan",
+                    "expectedOutput": "Hello░⁋\nJuan",
+                    "obtainedOutput": "Hello░⁋\nJuan",
+                    "outputDifferences": "[{\"value\":\"Hello\\nJuan\",\"count\":2}]",
+                    "classify": "Accepted",
+                    "mark": 100,
+                    "feedback": "Right Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "Charles",
+                    "expectedOutput": "Hello░⁋\nCharles",
+                    "obtainedOutput": "Hello░⁋\nCarlos",
+                    "outputDifferences": "[{\"count\":1,\"value\":\"Hello\\n\"},{\"count\":1,\"removed\":true,\"value\":\"Charles\"},{\"count\":1,\"added\":true,\"value\":\"Carlos\"}]",
+                    "classify": "Wrong Answer",
+                    "mark": 0,
+                    "feedback": "Wrong Answer.",
+                    "environmentValues": []
+                }
+            ]
+        }
+    },
+    "summary": {
+        "classify": "Wrong Answer",
+        "feedback": "Your current submission is exactly the previous one. Please try to think carefully before sending your answer."
+    }
+}
+// PEAR object: both tests wrong
+{
+    "request": {
+        "date": "2023-02-08T21:31:47-10:00",
+        "program": "import java.util.Scanner;\r\n\r\npublic class Main {\r\n\r\n    public static void main(String[] args)\r\n    {\r\n        Scanner input = new Scanner (System.in);\r\n        String name = input.next();\r\n        System.out.println(\"Helo \");\r\n        System.out.print(name);\r\n    }\r\n}",
+        "learningObject": "5545785d-7fbd-4804-a9b0-b3152a753ceb",
+        "studentID": "2",
+        "language": "Java"
+    },
+    "reply": {
+        "report": {
+            "capability": {
+                "id": "Java-evaluator",
+                "features": [
+                    {
+                        "name": "language",
+                        "value": "java"
+                    },
+                    {
+                        "name": "version",
+                        "value": "openjdk 11.0.15"
+                    },
+                    {
+                        "name": "engine",
+                        "value": "https://openjdk.java.net/"
+                    }
+                ],
+                "programmingFeatures": {
+                    "compilationProgram": "javac",
+                    "extFile": "java",
+                    "executionProgram": "java",
+                    "executionProgramParameters": [
+                        "-Duser.language=es",
+                        "-Duser.region=ES"
+                    ],
+                    "needsClassName": true
+                }
+            },
+            "programmingLanguage": "Java",
+            "exercise": "5545785d-7fbd-4804-a9b0-b3152a753ceb",
+            "tests": [
+                {
+                    "input": "Juan",
+                    "expectedOutput": "Hello░⁋\nJuan",
+                    "obtainedOutput": "Helo░⁋\nJuan",
+                    "outputDifferences": "[{\"count\":1,\"removed\":true,\"value\":\"Hello\\n\"},{\"count\":1,\"added\":true,\"value\":\"Helo\\n\"},{\"count\":1,\"value\":\"Juan\"}]",
+                    "classify": "Wrong Answer",
+                    "mark": 0,
+                    "feedback": "Wrong Answer.",
+                    "environmentValues": []
+                },
+                {
+                    "input": "Charles",
+                    "expectedOutput": "Hello░⁋\nCharles",
+                    "obtainedOutput": "Helo░⁋\nCharles",
+                    "outputDifferences": "[{\"count\":1,\"removed\":true,\"value\":\"Hello\\n\"},{\"count\":1,\"added\":true,\"value\":\"Helo\\n\"},{\"count\":1,\"value\":\"Charles\"}]",
+                    "classify": "Wrong Answer",
+                    "mark": 0,
+                    "feedback": "Wrong Answer.",
+                    "environmentValues": []
+                }
+            ]
+        }
+    },
+    "summary": {
+        "classify": "Wrong Answer",
+        "feedback": "You don't make any improvements between the last submission and the current one. However, don't give up!! You can "
+    }
+}

@@ -13,6 +13,7 @@ router.get("/feedback/performance/:intent", async(req, res) => {
     var Mocha = require('mocha');
     const currentDateTime = moment().tz('Portugal').format('YYYY/MM/DD/HH/mm/ss');
     const reportDirectory = path.resolve(__dirname, `../../public/execution-report/${currentDateTime}`)
+    
     var mocha = new Mocha({
         timeout: 200000,
         reporter: 'mochawesome',
@@ -23,10 +24,10 @@ router.get("/feedback/performance/:intent", async(req, res) => {
             charts: true
         }
     });
+
     mocha.cleanReferencesAfterRun(true)
     var suite = (suiteName = `-${Math.random() * 10000}-`) => Mocha.Suite.create(mocha.suite, suiteName);
     let result = await defineTestSuiteAndAddTests(suite, Mocha.Test, Mocha.Suite, intent);
-
 
     mocha.run((failures) => {
         setTimeout(() => {
@@ -41,9 +42,7 @@ router.get("/feedback/performance/:intent", async(req, res) => {
                         })
                     } else {
                         res.redirect(`/execution-report/${currentDateTime}/mochawesome.html`)
-
                     }
-
                 }
                 const v = (call, i) => {
                     if (reports_id_list[i] != undefined) {
@@ -53,26 +52,19 @@ router.get("/feedback/performance/:intent", async(req, res) => {
                             call(call, i)
                         })
                     } else {
-
                         r(r, 0);
                     }
-
                 }
-
                 v(v, 0);
-
             } else {
                 console.log("intent == 1")
                 res.redirect(`/execution-report/${currentDateTime}/mochawesome.html`)
             }
         }, 3000)
-
-
     }).catch((err) => {
         console.log(err);
         res.sendStatus(500);
     });
-
 
 });
 
@@ -82,9 +74,8 @@ router.get("/configuration", async(req, res) => {
     Object.keys(config).forEach(function(key) {
         process.env[key] = jsonData[key];
     });
-
-
 });
+
 router.post("/", async function(req, res) {
     await loadSchemaYAPEXIL();
     var input = req.body //JSON.parse();
@@ -94,7 +85,8 @@ router.post("/", async function(req, res) {
                 if (("summary" in input) == false) {
                     input.summary = {}
                 }
-                input.summary.feedback = feedback
+                input.summary.feedback = feedback[0]
+                input.reply.report.tests = input.reply.report.tests.filter(function(el){return el.visible != false});
                 res.json(input);
             }).catch((error) => {
                 console.log(error)
@@ -107,6 +99,5 @@ router.post("/", async function(req, res) {
     }
 
 });
-
 
 export default router;

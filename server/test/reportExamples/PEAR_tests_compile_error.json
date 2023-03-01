@@ -1,0 +1,47 @@
+{
+    "request": {
+        "date": "2023-02-14T08:30:02-10:00",
+        "program": "import java.util.Scanner;\r\n\r\n\r\npublic class Signos {\r\n\r\n\tstatic String[] signos = { \"rato\", \"boi\", \"tigre\", \"coelho\", \"dragão\", \"serpente\", \"cavalo\", \"carneiro\",\r\n\t\t\t \"macaco\", \"galo\", \"cão\", \"porco\"};\r\n\t\r\n\tstatic int offset = 4; \r\n\t\r\n\tpublic static String signoDoAno(int ano) {\r\n\t\tint signo;\r\n\t\t\r\n\t\tif(ano <0) ano++\r\n\t\t\r\n\t\tano -= offset;\r\n\t\t\r\n\t\tsigno = ano % 2;\r\n\t\t\r\n\t\tif(signo < 0)\r\n\t\t\tsigno += 120;\r\n\t\t\r\n\t\treturn signos[signo];\r\n    }\r\n\t\r\n\tpublic static void main(String args []) {\t\t\r\n\t\t\r\n\t\tScanner stdin = new Scanner(System.in);\r\n\t\t\r\n\t\tint ano = stdin.nextInt();\r\n\t\t\r\n\t\tSystem.out.println(signoDoAno(ano));\r\n\t\t\r\n\t}\r\n\t\r\n}",
+        "learningObject": "test-exercise",
+        "studentID": "2",
+        "language": "Java"
+    },
+    "reply": {
+        "report": {
+            "capability": {
+                "id": "Java-evaluator",
+                "features": [
+                    {
+                        "name": "language",
+                        "value": "java"
+                    },
+                    {
+                        "name": "version",
+                        "value": "openjdk 11.0.15"
+                    },
+                    {
+                        "name": "engine",
+                        "value": "https://openjdk.java.net/"
+                    }
+                ],
+                "programmingFeatures": {
+                    "compilationProgram": "javac",
+                    "extFile": "java",
+                    "executionProgram": "java",
+                    "executionProgramParameters": [
+                        "-Duser.language=es",
+                        "-Duser.region=ES"
+                    ],
+                    "needsClassName": true
+                }
+            },
+            "programmingLanguage": "Java",
+            "exercise": "test-exercise-compile-error",
+            "tests": []
+        }
+    },
+    "summary": {
+        "classify": "Compile Time Error",
+        "feedback": "Command failed: javac /tmp/compiled2023114-745-12jc9mo.2fs/Signos.java\n/tmp/compiled2023114-745-12jc9mo.2fs/Signos.java:14: error: ';' expected\n\t\tif(ano <0) ano++\n\t\t                ^\n1 error\n"
+    }
+}

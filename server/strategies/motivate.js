@@ -1,4 +1,4 @@
-import feedbackItem from '../commons/feedbackItem';
+var feedbackItem = require('../commons/feedbackItem')
 
 const HINTS = [
     "work harder",

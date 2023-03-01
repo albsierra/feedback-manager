@@ -1,4 +1,4 @@
-import feedbackItem from '../commons/feedbackItem';
+var feedbackItem = require('../commons/feedbackItem')
 
 
 const feedback_name = "inputTestCase";
@@ -10,15 +10,13 @@ module.exports = {
 
         try {
             let feedback = "Test evaluation was performed using the following inputs:\n"
-            let target = [];
             const incorrect_tests = (report.tests.map((value, index) => { if (value.classify != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
             incorrect_tests.forEach(function(key) {
-                feedback += JSON.stringify(exercise.tests_contents_in[exercise.tests[key].id]);
+                feedback += JSON.stringify(report.tests[key].input)
                 feedback += "\n";
-                target.push(key)
             });
 
-            return (new feedbackItem(feedback, 5, "INF", target, feedback_name))
+            return (new feedbackItem(feedback, 5, "INF", incorrect_tests, feedback_name))
         } catch (err) {
             console.log(err)
             return (err);
