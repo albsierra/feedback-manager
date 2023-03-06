@@ -79,7 +79,7 @@ function readStrategiesAndStart() {
 
 // Called when wrong answer and not compilation error
 function applyStrategies(input, student_file, feedback_already_reported, resolve, reject, full_report) {
-    if(input.hint){
+    if(input.tests.some(el => 'hint' in el)){
         FCG(null, input, student_file, feedback_already_reported, resolve, full_report, reject)
     }else{
         ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).

@@ -36,8 +36,7 @@
                 }
             },
             "programmingLanguage": "Java",
-            "exercise": "test-exercise-all-wrong",
-            "hint": "test hint",
+            "exercise": "test-exercise",
             "tests": [
                 {
                     "input": "-1\n",
@@ -47,6 +46,7 @@
                     "classify": "Wrong Answer",
                     "mark": 0,
                     "feedback": "Wrong Answer.",
+                    "hint": "Input é -1",
                     "environmentValues": []
                 },
                 {

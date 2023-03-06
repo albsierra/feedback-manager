@@ -8,8 +8,8 @@ module.exports = {
     "getFeedback": async(report, exercise, student_file) => {
         if (report.tests != undefined && report.tests.length > 0) {
             let feedbacks = []
+            const incorrect_tests = (report.tests.map((value, index) => { if (value.classify != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
             if(exercise != null){
-                const incorrect_tests = (report.tests.map((value, index) => { if (value.classify != "Accepted") return index })).filter((value) => { return value != undefined ? true : false });
                 incorrect_tests.forEach(function(key) {
                     if (exercise.tests[key].feedback != undefined) {
                         if (Symbol.iterator in Object(exercise.tests[key].feedback)) {
@@ -21,8 +21,12 @@ module.exports = {
                     }
                 })
             }else{
-                let feedback = await `Hint:\n${report.hint}`;
-                feedbacks.push(new feedbackItem(feedback, 1, "INF", -1, feedback_name))
+                incorrect_tests.forEach(function(key) {
+                    if (report.tests[key].hint != undefined) {
+                        let feedback = `Hint:\n${report.tests[key].hint} `;
+                        feedbacks.push(new feedbackItem(feedback, 1, "INF", -1, feedback_name))
+                    }
+                })
             }
             return feedbacks;
         } else {
