@@ -20,30 +20,34 @@ module.exports = {
 
         // Prompt when the student provides a CORRECT answer
         if (isCorrect) selectedPrompt =
-            `In no more than 40 words, first using ${language} code language, analyze the following code: ${answer}, then, 
-        if necessary, provide a brief list indicating any crucial code optimization while maintaining the output as: 
-        ${expectedOutput}.`
+        `Please analyze the following code ${answer} in ${language} language and take note of any relevant aspects. No need to 
+        answer immediately.
+        In no more than 40 words, if we expect the result of that code to be exactly: ${expectedOutput}, provide me with a brief list 
+        indicating any critical code optimization (only if necessary).`
 
-        // Prompt cuando la respuesta es INCORRECTA
+        // Prompt when the student provides a WRONG answer
         else if (!isCorrect && !isWrongBecauseOfACompilationProblem) selectedPrompt =
-            `En no mas de 40 palabras, primero usando lenguaje ${language} estudia el siguiente código: ${answer}, y luego 
-        dame alguna sugerencia sin indicar código ${language}, mediante una breve lista, para que al ejecutar dicho 
-        código la salida sea exactamente lo siguiente: ${expectedOutput}.`
+        `Please analyze the following code ${answer} in ${language} language and take note of any relevant aspects. No need to 
+        answer immediately.
+        Then, in no more than 40 words, provide me suggestions on a brief list (without indicating any code in ${language}), 
+        so that upon executing the updated code with your suggestions, the output will be exactly as follows: ${expectedOutput}.`
 
 
-        // Prompt cuando hay ERROR DE COMPILACION
+        // Prompt when exists a COMPILATION PROBLEM
         else if (isWrongBecauseOfACompilationProblem) selectedPrompt =
-            `En no mas de 40 palabras, primero usando lenguaje ${language} estudia el siguiente código: ${answer}, y luego 
-        dime una lista con las lineas que generen un error al compilar dicho código.`;
+        `Please analyze the following code ${answer} in ${language} language and take note of any relevant aspects. No need to 
+        answer immediately.
+        Then, in no more than 40 words, provide me a brief list with the lines code that generate an error when compiling that 
+        code.`;
 
-        //Petición a ChatGPT
+        // OpenAI API access
         try {
             const completion = await openai.chat.completions.create({
                 messages: [{ "role": "user", "content": selectedPrompt }],
                 model: "gpt-3.5-turbo"
             });
 
-            //Pasamos todos los content de cada message a un solo string y devolvemos el feedback generado
+            // Convert to a string
             let feedbackText = "";
             completion.choices.forEach(choice => {
                 feedbackText += choice.message.content;
