@@ -5,7 +5,7 @@ const openai = new OpenAI({ AI_KEY }); // new instance of the OpenAI class with 
 
 module.exports = {
 
-    generateIA: async function generateIA(isWrongBecauseOfACompilationProblem, isCorrect, full_report) {
+    generateByAI: async function generateByIA(isWrongBecauseOfACompilationProblem, isCorrect, full_report) {
 
         let answer = full_report.request.program; // get the student answer
         let language = full_report.request.language; // get the test code language
@@ -18,27 +18,25 @@ module.exports = {
             // nothing to do because expectedOutput is not used on "compilation error" prompt.            
         }
 
-        // Prompt when the student provides a CORRECT answer
+        // Prompt when student provides a CORRECT answer
         if (isCorrect) selectedPrompt =
-        `Please analyze the following code ${answer} in ${language} language and take note of any relevant aspects. No need to 
-        answer immediately.
-        In no more than 40 words, if we expect the result of that code to be exactly: ${expectedOutput}, provide me with a brief list 
-        indicating any critical code optimization (only if necessary).`
+        `Please, no need to answer immediately, but analyze the following code ${answer} in ${language} language and take 
+        note of any relevant aspects.
+        Now, in no more than 40 words, if we expect the result of that code to be exactly: ${expectedOutput}, provide me 
+        with a brief list indicating any critical code optimization (only if necessary).`
 
-        // Prompt when the student provides a WRONG answer
+        // Prompt when student provides a WRONG answer
         else if (!isCorrect && !isWrongBecauseOfACompilationProblem) selectedPrompt =
-        `Please analyze the following code ${answer} in ${language} language and take note of any relevant aspects. No need to 
-        answer immediately.
-        Then, in no more than 40 words, provide me suggestions on a brief list (without indicating any code in ${language}), 
+        `Please, no need to answer immediately, but analyze the following code ${answer} in ${language} language and take 
+        note of any relevant aspects.
+        Now, in no more than 40 words, provide me suggestions on a brief list (without indicating any code in ${language}), 
         so that upon executing the updated code with your suggestions, the output will be exactly as follows: ${expectedOutput}.`
 
-
-        // Prompt when exists a COMPILATION PROBLEM
+        // Prompt when COMPILATION PROBLEM exists
         else if (isWrongBecauseOfACompilationProblem) selectedPrompt =
-        `Please analyze the following code ${answer} in ${language} language and take note of any relevant aspects. No need to 
-        answer immediately.
-        Then, in no more than 40 words, provide me a brief list with the lines code that generate an error when compiling that 
-        code.`;
+        `Please, no need to answer immediately, but analyze the following code ${answer} in ${language} language and take 
+        note of any relevant aspects.
+        Now, in no more than 40 words, provide me a brief list with the code lines that generate an error when compiling.`;
 
         // OpenAI API access
         try {
@@ -54,20 +52,19 @@ module.exports = {
             });
             return feedbackText;
 
-        } catch (error) { // Handle the error according to its type
-
+        } catch (error) { // Handle the error according to its status code
             if (error.status === 401) { // Incorrect or missing API key
-                if (AI_KEY == "") return "Authentication error: Missing API key.";
-                else return "Authentication error: Incorrect API key.";
+                if (AI_KEY == "") return "IA Authentication Error (401): Missing API key.";
+                else return "IA Authentication Error (401): Incorrect API key.";
 
             } else if (error.status === 400) { //         
-                return `IA 2 Error:  ${error.message}`;
+                return `IA Bad Request (400):  ${error.message}`;
 
             } else if (error.status === 500) { // 
-                return `IA 3 Error: ${error.message}`;
+                return `IA Internal Server Error (500): ${error.message}`;
 
             } else { // Other errors
-                return `IA Generic Error: ${error.message} - (status code: ${error.status})`;
+                return `IA Generic Error (${error.status}): ${error.message}`;
             }            
         }
     }

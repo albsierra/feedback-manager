@@ -5,7 +5,8 @@ var feedbackItem = require('./commons/feedbackItem.js')
 var {ProgrammingExercise} = require('programming-exercise-juezlti')
 var fillFile = require('./commons/fill.js')
 require('dotenv').config()
-var openAI = require('./commons/AI_Generator.js') // Llamada a modulo que genera feedback IA gracias a API OpenAI
+var openAI = require('./commons/AI_Generator.js') // OpenAI API "AI feedback generator"
+var GeneratedIAFeedback = ""; // Completes de original feedback with some extra help
 const strategies = [];
 const compileErrors = ["Output Limit Exceeded",
     "Memory Limit Exceeded",
@@ -56,15 +57,9 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
                 }
             }
 
-            // Generamos la parte extra del feedback mediante IA () isCorrect = false & isWrongBecauseOfACompilationProblem = false
-            let feedbackIA = "";
-            await openAI.generateIA(false, false, full_report).then(resultado => {
-                feedbackIA = "\n" + resultado;
-            });
-
             persist_feedback(evaluation_report, student_file.student_id, feedback.name, feedback.text, feedback_id => {
                 persist_report(feedback_id, full_report, report_id => {
-                    resolve([feedback.text + feedbackIA, feedback_id, report_id]);
+                    resolve([feedback.text + GeneratedIAFeedback, feedback_id, report_id]);
                 });
             });
             
@@ -72,11 +67,10 @@ const FCG = async(programmingExercise, evaluation_report, student_file, feedback
             console.log(err)
             reject(err)
         }
-    } else {
-        openAI.generateIA(false, false, full_report).then(resultado => {
+    } else {        
             resolve([`Your current submission is exactly the previous one. Please try to think carefully before sending your answer. 
-            \n ${resultado}`]);
-        });
+            ${GeneratedIAFeedback}`]);
+        
     }
 }
 
@@ -118,9 +112,14 @@ function applyStrategies(input, student_file, feedback_already_reported, resolve
 module.exports = {
     // Read classify and check if is compilation error.
     getBestFeedback:function getBestFeedback(input, student_id, full_report) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const isWrongBecauseOfACompilationProblem = compileErrors.includes(full_report.summary.classify);
             const isCorrect = full_report.summary.classify == "Accepted";
+            
+            // Generate extra feedback with AI
+            await openAI.generateByAI(isWrongBecauseOfACompilationProblem, isCorrect, full_report).then(feedbackAI => {
+                GeneratedIAFeedback = "\n" + feedbackAI;
+            });
 
             if (!isCorrect && !isWrongBecauseOfACompilationProblem){
                 if (strategies.length == 0) {
@@ -134,9 +133,9 @@ module.exports = {
                     reject();
 
                 });
-            } else if (isCorrect) {
-                openAI.generateIA(isWrongBecauseOfACompilationProblem, isCorrect, full_report).then(resultado => {
-                    let feedback_text = "Congratulations!!!! you have submitted the correct answer" + "\n" + resultado;
+
+            } else if (isCorrect) {                
+                    let feedback_text = "Congratulations!!!! you have submitted the correct answer" + GeneratedIAFeedback;
                     let number_of_correct_tests = [];
 
                     [...Array(input.number_of_tests)].forEach((el, index) => {
@@ -149,11 +148,9 @@ module.exports = {
                             resolve([feedback_text, feedback_id, report_id]);
                         });
                     });
-                });
-                
-            } else if (isWrongBecauseOfACompilationProblem) {
-                openAI.generateIA(isWrongBecauseOfACompilationProblem, isCorrect, full_report).then(resultado => {
-                    let feedback_text = + "\n" + resultado;;
+                                
+            } else if (isWrongBecauseOfACompilationProblem) {                
+                    let feedback_text = full_report.summary.feedback + GeneratedIAFeedback;;
                     let evaluation_report = {
                         "exercise": input.exercise,
                         "compilationErrors": [],
@@ -164,10 +161,10 @@ module.exports = {
                     persist_feedback(evaluation_report, student_id, full_report.summary.classify, full_report.summary.feedback, feedback_id => {
                         persist_report(feedback_id, full_report, report_id => {
                             //Resolve as array because resolve can only contain one value
-                            resolve([full_report.summary.feedback + feedback_text, feedback_id, report_id]);
+                            resolve([feedback_text, feedback_id, report_id]);
                         });
                     });
-                });
+                
             }
         })
     },
