@@ -18,6 +18,7 @@ const compileErrors = ["Output Limit Exceeded",
     "Program Size Exceeded",
     "Presentation Error"
 ]
+var exercise;
 
 
 //Algorithm to select best feedback to send
@@ -109,12 +110,40 @@ function applyStrategies(input, student_file, feedback_already_reported, resolve
     }
 }
 
+
+function getExercise(input, reject) {    
+    ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
+    then((programmingExercise) => {
+        exercise = programmingExercise;
+    }).catch((err) => {
+    ProgrammingExercise
+        .loadRemoteExercise(input.exercise, {
+            'BASE_URL': process.env.BASE_URL,
+            'EMAIL': process.env.EMAIL,
+            'PASSWORD': process.env.PASSWORD,
+        })
+        .then(async(programmingExercise) => {
+                exercise = programmingExercise;
+                programmingExercise.serialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`)
+            }
+        ).catch((err) => {
+            console.log(err)
+            console.log("error at function getExercise when loadRemoteExercise");
+            reject(err)
+        });
+    })    
+}
+
+
+
 module.exports = {
     // Read classify and check if is compilation error.
     getBestFeedback:function getBestFeedback(input, student_id, full_report) {
         return new Promise(async (resolve, reject) => {
             const isWrongBecauseOfACompilationProblem = compileErrors.includes(full_report.summary.classify);
             const isCorrect = full_report.summary.classify == "Accepted";
+
+            getExercise(input, reject);
             
             // Generate extra feedback with AI
             await openAI.generateByAI(isWrongBecauseOfACompilationProblem, isCorrect, full_report).then(feedbackAI => {
@@ -135,7 +164,7 @@ module.exports = {
                 });
 
             } else if (isCorrect) {                
-                    let feedback_text = "Congratulations!!!! you have submitted the correct answer" + generatedAIFeedback;
+                    let feedback_text = "Congratulations!!!! you have submitted the correct answer" + generatedAIFeedback + exercise.keywords[0];
                     let number_of_correct_tests = [];
 
                     [...Array(input.number_of_tests)].forEach((el, index) => {
