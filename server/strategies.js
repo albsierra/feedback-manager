@@ -4,8 +4,9 @@ var {db, closeConnection, insert, createIndex, checkIfExist, remove, removeMany}
 var feedbackItem = require('./commons/feedbackItem.js')
 var {ProgrammingExercise} = require('programming-exercise-juezlti')
 var fillFile = require('./commons/fill.js')
+const { generateByAI } = require('./commons/AI_Generator.js')
 require('dotenv').config()
-var openAI = require('./commons/AI_Generator.js') // OpenAI API "AI feedback generator"
+require('./commons/AI_Generator.js') // OpenAI API "AI feedback generator"
 var generatedAIFeedback = ""; // Completes de original feedback with some extra help
 const strategies = [];
 const compileErrors = ["Output Limit Exceeded",
@@ -18,7 +19,6 @@ const compileErrors = ["Output Limit Exceeded",
     "Program Size Exceeded",
     "Presentation Error"
 ]
-var exercise;
 
 
 //Algorithm to select best feedback to send
@@ -82,56 +82,38 @@ function readStrategiesAndStart() {
         strategies.push(require(path.join(__dirname, "/strategies", file))));
 }
 
-// Called when wrong answer and not compilation error
-function applyStrategies(input, student_file, feedback_already_reported, resolve, reject, full_report) {
-    if(input.tests.some(el => 'hint' in el)){
-        FCG(null, input, student_file, feedback_already_reported, resolve, full_report, reject)
-    }else{
-        ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
-        then((programmingExercise) => {
-            FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
-        }).catch((err) => {
-        ProgrammingExercise
-            .loadRemoteExercise(input.exercise, {
-                'BASE_URL': process.env.BASE_URL,
-                'EMAIL': process.env.EMAIL,
-                'PASSWORD': process.env.PASSWORD,
-            })
-            .then(async(programmingExercise) => {
-                    FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject)
-                    programmingExercise.serialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`)
-                }
-            ).catch((err) => {
-                console.log(err)
-                console.log("error at  function applyStrategies when loadRemoteExercise");
-                reject(err)
+function getExercise(input) {
+    return new Promise((resolve, reject) => {
+        ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`)
+            .then((programmingExercise) => {
+                resolve(programmingExercise);
+            }).catch((err) => {
+                ProgrammingExercise.loadRemoteExercise(input.exercise, {
+                    'BASE_URL': process.env.BASE_URL,
+                    'EMAIL': process.env.EMAIL,
+                    'PASSWORD': process.env.PASSWORD,
+                }).then(async (programmingExercise) => {
+                    resolve(programmingExercise);
+                    await programmingExercise.serialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`);
+                }).catch((err) => {
+                    console.log(err);
+                    console.log("error at retrieving exercise");
+                    reject(err);
+                });
             });
-        })
-    }
+    });
 }
 
-
-function getExercise(input, reject) {    
-    ProgrammingExercise.deserialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`).
-    then((programmingExercise) => {
-        exercise = programmingExercise;
-    }).catch((err) => {
-    ProgrammingExercise
-        .loadRemoteExercise(input.exercise, {
-            'BASE_URL': process.env.BASE_URL,
-            'EMAIL': process.env.EMAIL,
-            'PASSWORD': process.env.PASSWORD,
-        })
-        .then(async(programmingExercise) => {
-                exercise = programmingExercise;
-                programmingExercise.serialize(path.join(__dirname, "../public/zip"), `${input.exercise}.zip`)
-            }
-        ).catch((err) => {
-            console.log(err)
-            console.log("error at function getExercise when loadRemoteExercise");
-            reject(err)
+function applyStrategies(input, student_file, feedback_already_reported, resolve, reject, full_report) {
+    if (input.tests.some(el => 'hint' in el)) {
+        FCG(null, input, student_file, feedback_already_reported, resolve, full_report, reject);
+    } else {
+        getExercise(input).then((programmingExercise) => {
+            FCG(programmingExercise, input, student_file, feedback_already_reported, resolve, full_report, reject);
+        }).catch((err) => {
+            reject(err);
         });
-    })    
+    }
 }
 
 
@@ -143,12 +125,13 @@ module.exports = {
             const isWrongBecauseOfACompilationProblem = compileErrors.includes(full_report.summary.classify);
             const isCorrect = full_report.summary.classify == "Accepted";
 
-            getExercise(input, reject);
-            
-            // Generate extra feedback with AI
-            await openAI.generateByAI(isWrongBecauseOfACompilationProblem, isCorrect, full_report).then(feedbackAI => {
-                generatedAIFeedback = "\n" + feedbackAI;
-            });
+            let exercise = await getExercise(input);
+
+            if (exercise.keywords.includes("withAI")){ // if true generate extra feedback with AI                
+                await generateByAI(isWrongBecauseOfACompilationProblem, isCorrect, full_report).then(feedbackAI => {
+                    generatedAIFeedback += "\n" + feedbackAI;
+                });
+            }
 
             if (!isCorrect && !isWrongBecauseOfACompilationProblem){
                 if (strategies.length == 0) {
@@ -164,7 +147,7 @@ module.exports = {
                 });
 
             } else if (isCorrect) {                
-                    let feedback_text = "Congratulations!!!! you have submitted the correct answer" + generatedAIFeedback + exercise.keywords[0];
+                    let feedback_text = "Congratulations!!!! you have submitted the correct answer" + generatedAIFeedback;
                     let number_of_correct_tests = [];
 
                     [...Array(input.number_of_tests)].forEach((el, index) => {
