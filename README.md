@@ -19,4 +19,4 @@ strategies.js:
     - Add lines on "getBestFeedback" function to "getExercise" and check if exists "withAI" on the "keywords" array property
     
     
-commons/AI_generator: new file to create prompts, depending of boolean "isWrongBecauseOfACompilationProblem" and "isCorrect" values. The prompts are sending to OpenAI for getting a string type response to offer help to the student.
+/commons/AI_generator.js: new file to create prompts, depending of boolean "isWrongBecauseOfACompilationProblem" and "isCorrect" values. The prompts are sending to OpenAI for getting a string type response to offer help to the student.
