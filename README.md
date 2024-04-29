@@ -10,9 +10,13 @@ package-lock.json: now includes "openai": "^4.35.0" on dependencies
 
 package.json: now includes "openai": "^4.35.0" on dependencies
 
-strategies.js: 
+strategies.js:
+
     - New function "getExercise", with the logic of rescue the programming exercise
+    
     - "applyStrategies" function simplified by extracting the logic of "getExercise" function.
+    
     - Add lines on "getBestFeedback" function to "getExercise" and check if exists "withAI" on the "keywords" array property
+    
     
 commons/AI_generator: new file to create prompts, depending of boolean "isWrongBecauseOfACompilationProblem" and "isCorrect" values. The prompts are sending to OpenAI for getting a string type response to offer help to the student.
