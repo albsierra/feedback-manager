@@ -15,7 +15,7 @@ module.exports = {
             // change unicode to equivalent plain text
             expectedOutput = full_report.reply.report.tests[0].expectedOutput.replaceAll("&#x2591;", " ").replaceAll("&#x204B;", "");
         } catch (error) {
-            // nothing to do because expectedOutput is not used on "compilation error" prompt.            
+            // nothing to do because expectedOutput is not used on "compilation error" prompt creation.            
         }
 
         // Prompt when student provides a CORRECT answer
@@ -36,7 +36,8 @@ module.exports = {
         else if (isWrongBecauseOfACompilationProblem) selectedPrompt =
         `Please, no need to answer immediately, but analyze the following code ${answer} in ${language} language and take 
         note of any relevant aspects.
-        Now, in no more than 40 words, provide me a brief list with the code lines that generate an error when compiling.`;
+        Now, in no more than 40 words, provide me a brief list with the code lines that generate an error when compiling 
+        end some help to fix it.`;
 
         // OpenAI API access
         try {
