@@ -1,6 +1,7 @@
 # feedback-manager
 
 Need to add new line on .env file:
+
 OPENAI_API_KEY="your personal key from OPENAI API"
 
 Updates:
