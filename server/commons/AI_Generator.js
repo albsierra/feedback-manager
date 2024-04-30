@@ -10,40 +10,56 @@ module.exports = {
         let answer = full_report.request.program; // get the student answer
         let language = full_report.request.language; // get the test code language
         let selectedPrompt = ""; // for getting the best prompt (depends on boolean parameters)
+        let obtainedOutput = ""; // get the obtained output for the test
         let expectedOutput = ""; // get the expected output for the test (doesn't exist on isWrongBecauseOfACompilationProblem=true)
         try {
             // change unicode to equivalent plain text
-            expectedOutput = full_report.reply.report.tests[0].expectedOutput.replaceAll("&#x2591;", " ").replaceAll("&#x204B;", "");
+            expectedOutput = full_report.reply.report.tests[0].expectedOutput.replaceAll("&#x2591;", " ").replaceAll("&#x204B;", "\n");
+            obtainedOutput = full_report.reply.report.tests[0].obtainedOutput.replaceAll("&#x2591;", " ").replaceAll("&#x204B;", "\n");
         } catch (error) {
             // nothing to do because expectedOutput is not used on "compilation error" prompt creation.            
         }
 
+        selectedPrompt = "Please, it's no necessary to answer immediately, but analyze the following code" + "\n" +
+                         "```" + language + "\n" +
+                         answer + "\n" +
+                         "```" + "\n" +
+                         "and take note of any relevant aspects." + "\n" +
+                         "Now, in no more than 40 words, "; // initialize the selected prompt
+
         // Prompt when student provides a CORRECT answer
-        if (isCorrect) selectedPrompt =
-        `Please, no need to answer immediately, but analyze the following code ${answer} in ${language} language and take 
-        note of any relevant aspects.
-        Now, in no more than 40 words, if we expect the result of that code to be exactly: ${expectedOutput}, provide me 
-        with a brief list indicating any critical code optimization (only if necessary).`
+        if (isCorrect)
+                    selectedPrompt +=
+                        "if we expect the result of that code to be exactly:" + "\n" +
+                        "```" + "\n" +
+                        expectedOutput + "\n" +
+                        "```" + "\n" +
+                        ", provide me with an single advice indicating some critical code optimization (only if necessary).";
 
         // Prompt when student provides a WRONG answer
-        else if (!isCorrect && !isWrongBecauseOfACompilationProblem) selectedPrompt =
-        `Please, no need to answer immediately, but analyze the following code ${answer} in ${language} language and take 
-        note of any relevant aspects.
-        Now, in no more than 40 words, provide me suggestions on a brief list (without indicating any code in ${language}), 
-        so that upon executing the updated code with your suggestions, the output will be exactly as follows: ${expectedOutput}.`
+        else if (!isCorrect && !isWrongBecauseOfACompilationProblem)
+                    selectedPrompt +=
+                        "provide me with a single suggestion (without indicating any code in ${language}), " +
+                        "so that upon executing the updated code with your suggestion, the output obtained was" + "\n" +
+                        "```" + "\n" +
+                        obtainedOutput + "\n" +
+                        "```" + "\n" +
+                        "and we expected to obtain exactly as follows:" + "\n" +
+                        "```" + "\n" +
+                        expectedOutput + "\n" +
+                        "```" + "\n" +
+                        ".";
 
         // Prompt when COMPILATION PROBLEM exists
-        else if (isWrongBecauseOfACompilationProblem) selectedPrompt =
-        `Please, no need to answer immediately, but analyze the following code ${answer} in ${language} language and take 
-        note of any relevant aspects.
-        Now, in no more than 40 words, provide me a brief list with the code lines that generate an error when compiling 
-        end some help to fix it.`;
+        else if (isWrongBecauseOfACompilationProblem)
+                    selectedPrompt +=
+                        "provide me with only the first code line that generates an error when compiling and some help to fix it.";
 
         // OpenAI API access
         try {
             const completion = await openai.chat.completions.create({
                 messages: [{ "role": "user", "content": selectedPrompt }],
-                model: "gpt-3.5-turbo"
+                model: process.env.OPENAI_API_MODEL
             });
 
             // Convert to a string

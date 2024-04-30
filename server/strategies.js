@@ -129,7 +129,7 @@ module.exports = {
 
             let exercise = await getExercise(input); // getting actual programming exercise
 
-            if (exercise.keywords.includes("withAI")){ // if true, then generate extra feedback with AI                
+            if (exercise.keywords.map(keyword => keyword.toLowerCase()).includes("withai")){ // if true, then generate extra feedback with AI
                 await generateByAI(isWrongBecauseOfACompilationProblem, isCorrect, full_report).then(feedbackAI => {
                     generatedAIFeedback = "\n" + feedbackAI;
                 });
